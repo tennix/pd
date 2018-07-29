@@ -25,7 +25,7 @@ type hotStatusHandler struct {
 	rd *render.Render
 }
 
-type hotStoreStats struct {
+type HotStoreStats struct {
 	BytesWriteStats map[uint64]uint64 `json:"bytes-write-rate,omitempty"`
 	BytesReadStats  map[uint64]uint64 `json:"bytes-read-rate,omitempty"`
 	KeysWriteStats  map[uint64]uint64 `json:"keys-write-rate,omitempty"`
@@ -53,7 +53,7 @@ func (h *hotStatusHandler) GetHotStores(w http.ResponseWriter, r *http.Request) 
 	keysWriteStats := h.GetHotKeysWriteStores()
 	keysReadStats := h.GetHotKeysWriteStores()
 
-	stats := hotStoreStats{
+	stats := HotStoreStats{
 		BytesWriteStats: bytesWriteStats,
 		BytesReadStats:  bytesReadStats,
 		KeysWriteStats:  keysWriteStats,

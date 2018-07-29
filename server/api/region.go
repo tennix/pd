@@ -28,7 +28,7 @@ import (
 	"github.com/unrolled/render"
 )
 
-type regionInfo struct {
+type RegionInfo struct {
 	ID          uint64              `json:"id"`
 	StartKey    string              `json:"start_key"`
 	EndKey      string              `json:"end_key"`
@@ -44,11 +44,11 @@ type regionInfo struct {
 	ApproximateKeys int64             `json:"approximate_keys,omitempty"`
 }
 
-func newRegionInfo(r *core.RegionInfo) *regionInfo {
+func newRegionInfo(r *core.RegionInfo) *RegionInfo {
 	if r == nil {
 		return nil
 	}
-	return &regionInfo{
+	return &RegionInfo{
 		ID:              r.Id,
 		StartKey:        strings.Trim(fmt.Sprintf("%q", r.StartKey), "\""),
 		EndKey:          strings.Trim(fmt.Sprintf("%q", r.EndKey), "\""),
@@ -64,9 +64,9 @@ func newRegionInfo(r *core.RegionInfo) *regionInfo {
 	}
 }
 
-type regionsInfo struct {
+type RegionsInfo struct {
 	Count   int           `json:"count"`
-	Regions []*regionInfo `json:"regions"`
+	Regions []*RegionInfo `json:"regions"`
 }
 
 type regionHandler struct {
@@ -132,11 +132,11 @@ func (h *regionsHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 	}
 
 	regions := cluster.GetMetaRegions()
-	regionInfos := make([]*regionInfo, len(regions))
+	regionInfos := make([]*RegionInfo, len(regions))
 	for i, r := range regions {
 		regionInfos[i] = newRegionInfo(&core.RegionInfo{Region: r})
 	}
-	regionsInfo := &regionsInfo{
+	regionsInfo := &RegionsInfo{
 		Count:   len(regions),
 		Regions: regionInfos,
 	}
@@ -213,7 +213,7 @@ func (h *regionsHandler) GetRegionSiblings(w http.ResponseWriter, r *http.Reques
 	}
 
 	left, right := cluster.GetAdjacentRegions(region)
-	res := []*regionInfo{newRegionInfo(left), newRegionInfo(right)}
+	res := []*RegionInfo{newRegionInfo(left), newRegionInfo(right)}
 	h.rd.JSON(w, http.StatusOK, res)
 }
 
@@ -249,11 +249,11 @@ func (h *regionsHandler) GetTopNRegions(w http.ResponseWriter, r *http.Request, 
 		limit = maxRegionLimit
 	}
 	regions := topNRegions(cluster.GetRegions(), less, limit)
-	regionInfos := make([]*regionInfo, len(regions))
+	regionInfos := make([]*RegionInfo, len(regions))
 	for i, r := range regions {
 		regionInfos[i] = newRegionInfo(r)
 	}
-	res := &regionsInfo{
+	res := &RegionsInfo{
 		Count:   len(regions),
 		Regions: regionInfos,
 	}

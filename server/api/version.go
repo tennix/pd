@@ -6,7 +6,7 @@ import (
 	"github.com/unrolled/render"
 )
 
-type version struct {
+type Version struct {
 	Version string `json:"version"`
 }
 
@@ -21,7 +21,7 @@ func newVersionHandler(rd *render.Render) *versionHandler {
 }
 
 func (h *versionHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	version := &version{
+	version := &Version{
 		Version: "1.0.0",
 	}
 	h.rd.JSON(w, http.StatusOK, version)

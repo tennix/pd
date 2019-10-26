@@ -39,6 +39,7 @@ import (
 	"github.com/pingcap/pd/server/namespace"
 	tikv "github.com/pingcap/pd/tikv"
 	"github.com/pkg/errors"
+	"github.com/soheilhy/cmux"
 	"github.com/tikv/client-go/config"
 	"github.com/tikv/client-go/rawkv"
 	"go.etcd.io/etcd/clientv3"
@@ -375,11 +376,17 @@ func (s *Server) Run(ctx context.Context) error {
 		if err != nil {
 			return err
 		}
-		go http.ListenAndServe(clientURL.Host, s.etcdCfg.UserHandlers[pdAPIPrefix])
+		m := cmux.New(lis)
+		grpcListener := m.Match(cmux.HTTP2HeaderField("content-type", "application/grpc"))
+		httpListener := m.Match(cmux.HTTP1Fast())
+
+		httpSvr := &http.Server{Handler: s.etcdCfg.UserHandlers[pdAPIPrefix]}
+		go httpSvr.Serve(httpListener)
+
 		grpcsvr := grpc.NewServer()
 		tikv.RegisterRawKvServer(grpcsvr, s)
 		pdpb.RegisterPDServer(grpcsvr, s)
-		if err := grpcsvr.Serve(lis); err != nil {
+		if err := grpcsvr.Serve(grpcListener); err != nil {
 			return err
 		}
 	}

@@ -41,22 +41,22 @@ func main() {
 		panic(err)
 	}
 	for _, member := range resp.Members {
-		fmt.Println("members:", member)
+		fmt.Println("PD members:", member)
 	}
 
-	pt, lt, err := client.GetTS(ctx)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Printf("PT: %d, LT: %d\n", pt, lt)
+	// pt, lt, err := client.GetTS(ctx)
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// fmt.Printf("PT: %d, LT: %d\n", pt, lt)
 
-	storeResp, err := client.GetAllStores(ctx)
-	if err != nil {
-		panic(err)
-	}
-	for _, store := range storeResp {
-		fmt.Println("Store:", store)
-	}
+	// storeResp, err := client.GetAllStores(ctx)
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// for _, store := range storeResp {
+	// 	fmt.Println("Store:", store)
+	// }
 
 	rawkvClient := tikv.NewRawKvClient(conn)
 	getReq := &tikv.GetRequest{Key: []byte("Company")}

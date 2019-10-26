@@ -1,0 +1,108 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: tikv
+spec:
+  selector:
+    matchLabels:
+      app: tikv
+  serviceName: kv-headless
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: tikv
+    spec:
+      volumes:
+      - name: data
+        emptyDir: {}
+      containers:
+      - name: pd
+        image: docker.pkg.github.com/tennix/pd/hackathon:v0.1.1
+        command:
+        - /bin/sh
+        - -c
+        - |
+          sleep 20
+          ordinal=$(echo ${MY_POD_NAME} | awk -F'-' '{print $NF}')
+          if [ $ordinal == "0" ]; then
+            extraArgs="--initial-cluster=${MY_POD_NAME}=http://$(MY_POD_NAME).kv-headless.${MY_NAMESPACE}:2380"
+          else
+            extraArgs="--join=http://kv.${MY_NAMESPACE}:2379"
+          fi
+          /pd-server \
+          --name=${MY_POD_NAME} \
+          --peer-urls=http://0.0.0.0:2380 \
+          --advertise-peer-urls=http://${MY_POD_NAME}.kv-headless.${MY_NAMESPACE}:2380 \
+          --client-urls=http://0.0.0.0:2379 \
+          --advertise-client-urls=http://${MY_POD_NAME}.kv-headless.${MY_NAMESPACE}:2379 \
+          --data-dir=/data/pd \
+          ${extraArgs}
+        env:
+        - name: MY_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: MY_POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        volumeMounts:
+        - name: data
+          mountPath: /data
+      - name: tikv
+        image: docker.pkg.github.com/tennix/pd/hackathon:v0.1.1
+        command:
+        - /bin/sh
+        - -c
+        - |
+          sleep 30
+          /tikv-server \
+          --pd=localhost:2379 \
+          --advertise-addr=${MY_POD_NAME}.kv-headless.${MY_NAMESPACE}:20160 \
+          --addr=0.0.0.0:20160 \
+          --status-addr=0.0.0.0:20180 \
+          --data-dir=/data/tikv
+        env:
+        - name: MY_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: MY_POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        volumeMounts:
+        - name: data
+          mountPath: /data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kv-headless
+  labels:
+    app: tikv
+spec:
+  clusterIP: None
+  ports:
+  - port: 2379
+    name: pd
+  - port: 2380
+    name: etcd
+  - port: 20160
+    name: kv
+  selector:
+    app: tikv
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kv
+  labels:
+    app: tikv
+spec:
+  ports:
+  - port: 2379
+    name: kv
+  selector:
+    app: tikv

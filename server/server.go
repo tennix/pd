@@ -17,6 +17,7 @@ import (
 	"context"
 	"fmt"
 	"math/rand"
+	"net"
 	"net/http"
 	"path"
 	"path/filepath"
@@ -31,11 +32,15 @@ import (
 	"github.com/pingcap/kvproto/pkg/metapb"
 	"github.com/pingcap/kvproto/pkg/pdpb"
 	log "github.com/pingcap/log"
+	pd "github.com/pingcap/pd/client"
 	"github.com/pingcap/pd/pkg/etcdutil"
 	"github.com/pingcap/pd/pkg/logutil"
 	"github.com/pingcap/pd/server/core"
 	"github.com/pingcap/pd/server/namespace"
+	tikv "github.com/pingcap/pd/tikv"
 	"github.com/pkg/errors"
+	"github.com/tikv/client-go/config"
+	"github.com/tikv/client-go/rawkv"
 	"go.etcd.io/etcd/clientv3"
 	"go.etcd.io/etcd/embed"
 	"go.etcd.io/etcd/pkg/types"
@@ -71,6 +76,10 @@ type Server struct {
 	serverLoopCtx    context.Context
 	serverLoopCancel func()
 	serverLoopWg     sync.WaitGroup
+
+	joins       []string
+	pdClient    pd.Client
+	rawkvClient *rawkv.Client
 
 	// Etcd and cluster informations.
 	etcd      *embed.Etcd
@@ -126,7 +135,10 @@ func CreateServer(cfg *Config, apiRegister func(*Server) http.Handler) (*Server,
 			pdAPIPrefix: apiRegister(s),
 		}
 	}
-	etcdCfg.ServiceRegister = func(gs *grpc.Server) { pdpb.RegisterPDServer(gs, s) }
+	etcdCfg.ServiceRegister = func(gs *grpc.Server) {
+		pdpb.RegisterPDServer(gs, s)
+		tikv.RegisterRawKvServer(gs, s)
+	}
 	s.etcdCfg = etcdCfg
 	if EnableZap {
 		// The etcd master version has removed embed.Config.SetupLogging.
@@ -299,16 +311,85 @@ func (s *Server) Run(ctx context.Context) error {
 		})
 	})
 
-	if err := s.startEtcd(ctx); err != nil {
+	if s.cfg.Join == "" {
+		if err := s.startEtcd(ctx); err != nil {
+			return err
+		}
+	} else {
+		s.joins = strings.Split(s.cfg.Join, ",")
+		u := s.joins[0]
+		// TODO: ignore security option
+		pdClient, err := pd.NewClient(s.joins, pd.SecurityOption{})
+		if err != nil {
+			return err
+		}
+		resp, err := pdClient.GetMembers(ctx, u)
+		if err != nil {
+			return err
+		}
+		for _, member := range resp.Members {
+			fmt.Printf("Members: %v\n", member)
+		}
+		if len(resp.Members) < 3 { // members less than pd replicas
+			log.Info("Etcd servers less than 3")
+			if err := s.startEtcd(ctx); err != nil {
+				return err
+			}
+		} else {
+			log.Info("Etcd servers already 3")
+			s.pdClient = pdClient
+			endpoints := []string{s.etcdCfg.ACUrls[0].String()}
+			tlsConfig, err := ToTLSConfig(s.cfg.Security.ConvertToMap())
+			if err != nil {
+				return err
+			}
+			client, err := clientv3.New(clientv3.Config{
+				Endpoints:   endpoints,
+				DialTimeout: etcdTimeout,
+				TLS:         tlsConfig,
+			})
+			if err != nil {
+				return err
+			}
+			s.client = client
+			s.clusterID = pdClient.GetClusterID(ctx)
+			log.Info("cluster ID", zap.Uint64("cluster_id", s.clusterID))
+		}
+	}
+	cfg := config.Default()
+	var addrs []string
+	if len(s.joins) == 0 {
+		addrs = strings.Split(s.cfg.AdvertiseClientUrls, ",")
+	} else {
+		addrs = s.joins
+	}
+	log.Info("raw kv client addr", zap.Reflect("addrs", addrs))
+	if s.etcd != nil {
+		if err := s.startServer(); err != nil {
+			return err
+		}
+		s.startServerLoop()
+	} else {
+		clientURL := s.etcdCfg.ACUrls[0]
+		lis, err := net.Listen("tcp", fmt.Sprintf(":%s", clientURL.Port()))
+		if err != nil {
+			return err
+		}
+		go http.ListenAndServe(clientURL.Host, s.etcdCfg.UserHandlers[pdAPIPrefix])
+		grpcsvr := grpc.NewServer()
+		tikv.RegisterRawKvServer(grpcsvr, s)
+		pdpb.RegisterPDServer(grpcsvr, s)
+		if err := grpcsvr.Serve(lis); err != nil {
+			return err
+		}
+	}
+	// Only when the server is registered, can we use the client
+	rawkvClient, err := rawkv.NewClient(ctx, addrs, cfg)
+	if err != nil {
 		return err
 	}
-
-	if err := s.startServer(); err != nil {
-		return err
-	}
-
-	s.startServerLoop()
-
+	s.rawkvClient = rawkvClient
+	log.Info("Server run successfully")
 	return nil
 }
 
@@ -348,12 +429,31 @@ func (s *Server) serverMetricsLoop() {
 }
 
 func (s *Server) collectEtcdStateMetrics() {
-	etcdStateGauge.WithLabelValues("term").Set(float64(s.etcd.Server.Term()))
-	etcdStateGauge.WithLabelValues("appliedIndex").Set(float64(s.etcd.Server.AppliedIndex()))
-	etcdStateGauge.WithLabelValues("committedIndex").Set(float64(s.etcd.Server.CommittedIndex()))
+	if s.etcd != nil {
+		etcdStateGauge.WithLabelValues("term").Set(float64(s.etcd.Server.Term()))
+		etcdStateGauge.WithLabelValues("appliedIndex").Set(float64(s.etcd.Server.AppliedIndex()))
+		etcdStateGauge.WithLabelValues("committedIndex").Set(float64(s.etcd.Server.CommittedIndex()))
+	}
 }
 
 func (s *Server) bootstrapCluster(req *pdpb.BootstrapRequest) (*pdpb.BootstrapResponse, error) {
+	if s.etcd == nil {
+		// TODO: forward request to PD leader
+		return &pdpb.BootstrapResponse{
+			Header: s.header(),
+		}, nil
+	}
+
+	cluster := s.GetRaftCluster()
+	if cluster != nil {
+		err := &pdpb.Error{
+			Type:    pdpb.ErrorType_ALREADY_BOOTSTRAPPED,
+			Message: "cluster is already bootstrapped",
+		}
+		return &pdpb.BootstrapResponse{
+			Header: s.errorHeader(err),
+		}, nil
+	}
 	clusterID := s.clusterID
 
 	log.Info("try to bootstrap raft cluster",

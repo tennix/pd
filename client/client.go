@@ -32,6 +32,7 @@ import (
 // Client is a PD (Placement Driver) client.
 // It should not be used after calling Close().
 type Client interface {
+	GetMembers(ctx context.Context, url string) (*pdpb.GetMembersResponse, error)
 	// GetClusterID gets the cluster ID from PD.
 	GetClusterID(ctx context.Context) uint64
 	// GetTS gets a timestamp from PD.
@@ -194,7 +195,7 @@ func (c *client) initClusterID() error {
 	defer cancel()
 	for _, u := range c.urls {
 		timeoutCtx, timeoutCancel := context.WithTimeout(ctx, pdTimeout)
-		members, err := c.getMembers(timeoutCtx, u)
+		members, err := c.GetMembers(timeoutCtx, u)
 		timeoutCancel()
 		if err != nil || members.GetHeader() == nil {
 			log.Error("[pd] failed to get cluster id", zap.Error(err))
@@ -209,7 +210,7 @@ func (c *client) initClusterID() error {
 func (c *client) updateLeader() error {
 	for _, u := range c.urls {
 		ctx, cancel := context.WithTimeout(c.ctx, updateLeaderTimeout)
-		members, err := c.getMembers(ctx, u)
+		members, err := c.GetMembers(ctx, u)
 		cancel()
 		if err != nil || members.GetLeader() == nil || len(members.GetLeader().GetClientUrls()) == 0 {
 			select {
@@ -225,7 +226,7 @@ func (c *client) updateLeader() error {
 	return errors.Errorf("failed to get leader from %v", c.urls)
 }
 
-func (c *client) getMembers(ctx context.Context, url string) (*pdpb.GetMembersResponse, error) {
+func (c *client) GetMembers(ctx context.Context, url string) (*pdpb.GetMembersResponse, error) {
 	cc, err := c.getOrCreateGRPCConn(url)
 	if err != nil {
 		return nil, err

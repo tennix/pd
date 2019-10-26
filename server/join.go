@@ -128,6 +128,9 @@ func PrepareJoinCluster(cfg *Config) error {
 	}
 
 	existed := false
+	if len(listResp.Members) >= 3 {
+		return nil
+	}
 	for _, m := range listResp.Members {
 		if len(m.Name) == 0 {
 			return errors.New("there is a member that has not joined successfully")

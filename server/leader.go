@@ -168,7 +168,10 @@ func (s *Server) etcdLeaderLoop() {
 func (s *Server) MoveEtcdLeader(ctx context.Context, old, new uint64) error {
 	moveCtx, cancel := context.WithTimeout(ctx, moveLeaderTimeout)
 	defer cancel()
-	return errors.WithStack(s.etcd.Server.MoveLeader(moveCtx, old, new))
+	if s.etcd != nil {
+		return errors.WithStack(s.etcd.Server.MoveLeader(moveCtx, old, new))
+	}
+	return nil
 }
 
 // getLeader gets server leader from etcd.
@@ -187,7 +190,10 @@ func getLeader(c *clientv3.Client, leaderPath string) (*pdpb.Member, int64, erro
 
 // GetEtcdLeader returns the etcd leader ID.
 func (s *Server) GetEtcdLeader() uint64 {
-	return s.etcd.Server.Lead()
+	if s.etcd != nil {
+		return s.etcd.Server.Lead()
+	}
+	return 0 // TODO: return leader id by query using client
 }
 
 func (s *Server) isSameLeader(leader *pdpb.Member) bool {
@@ -212,6 +218,9 @@ func (s *Server) memberInfo() (member *pdpb.Member, marshalStr string) {
 }
 
 func (s *Server) campaignLeader() error {
+	if s.etcd == nil {
+		return nil
+	}
 	log.Info("start to campaign leader", zap.String("campaign-leader-name", s.Name()))
 
 	lessor := clientv3.NewLease(s.client)

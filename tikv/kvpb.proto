@@ -1,0 +1,185 @@
+syntax = "proto3";
+package kv;
+
+option java_package = "org.tikv.kvpb";
+
+// Ref: https://docs.google.com/document/d/1tDW9IqvcgY2IAR1IAPihM0W6Vqdh6UTkmWjRT7uED-g/edit#
+
+// go get -v -u github.com/golang/protobuf/protoc-gen-go
+// protoc -I tikv/ tikv/kvpb.proto --go_out=plugins=grpc:tikv
+
+message Error {
+  string msg = 1;
+}
+
+message KvPair {
+    bytes key = 1;
+    bytes value = 2;
+}
+
+message GetRequest {
+  bytes key = 1;
+}
+
+message GetResponse {
+  Error error = 1;
+  bytes value = 2;
+}
+
+message PutRequest {
+  bytes key = 1;
+  bytes value = 2;
+}
+
+message PutResponse {
+  Error error = 1;
+}
+
+message DeleteRequest {
+    bytes key = 1;
+}
+
+message DeleteResponse {
+    Error error = 1;
+    // Need to return whether deleted or not?
+}
+
+message ScanRequest {
+    bytes start_key = 1;
+    bytes end_key = 2;
+    uint32 limit = 3;
+    bool desc = 4;
+}
+
+message ScanResponse {
+    Error error = 1;
+    repeated KvPair paris = 2;
+}
+
+service RawKv {
+  rpc Get(GetRequest) returns (GetResponse) {}
+  // rpc BatchGet(BatchGetRequest) returns (BatchGetResponse) {}
+  rpc Put(PutRequest) returns (PutResponse) {}
+  // rpc BatchPut(BatchPutRequest) returns (BatchPutResponse) {}
+  // rpc Delete(DeleteRequest) returns (DeleteResponse) {}
+  // rpc BatchDelete(BatchDeleteRequest) returns (BatchDeleteResponse) {}
+  // rpc DeleteRange(DeleteRangeRequest) returns (DeleteRangeResponse) {}
+  // rpc Scan(ScanRequest) returns (ScanResponse) {}
+  // rpc ReverseScan(ReverseScanRequest) returns (ReverseScanResponse) {}
+}
+
+// Txn
+
+enum TxnRequestType {
+    Invalid = 0;
+    Begin = 1;
+    Commit = 2;
+    Rollback = 3;
+    Get = 4;
+    Put = 5;
+    Delete = 6;
+    Scan = 7;
+}
+
+message TxnSetRequest {
+    bool auto_commit = 1;
+}
+
+message TxnSetResponse {
+
+}
+
+message TxnBeginRequest {
+    // Start a transaction with a special timestamp explicitly.
+    uint64 start_ts = 1;
+}
+
+message TxnBeginResponse {
+    uint64 start_ts = 1;
+}
+
+message TxnCommitRequest {
+
+}
+
+message TxnCommitResponse {
+    uint64 commit_ts = 1;
+}
+
+message TxnRollbackRequest {
+
+}
+
+message TxnRollbackResponse {
+
+}
+
+message TxnGetRequest {
+    bytes key = 1;
+}
+
+message TxnGetResponse {
+    bytes value = 1;
+}
+
+message TxnPutRequest {
+    bytes key = 1;
+    bytes value = 2;
+}
+
+message TxnPutResponse {
+
+}
+
+message TxnDeleteRequest {
+    bytes key = 1;
+}
+
+message TxnDeleteResponse {
+
+}
+
+message TxnScanRequest {
+    bytes start_key = 1;
+    bytes end_key = 2;
+    uint32 limit = 3;
+    // When scanning forward, the range to scan is [start_key, end_key), where start_key < end_key;
+    // When scanning backward, it scans [end_key, start_key) in descending order, where
+    bool desc = 4;
+}
+
+message TxnScanResponse {
+    repeated KvPair paris = 1;
+}
+
+message TxnRequest {
+    TxnRequestType req_type = 1;
+    TxnSetRequest set = 2;
+    TxnBeginRequest begin = 3;
+    TxnCommitRequest commit = 4;
+    TxnRollbackRequest rollback = 5;
+    TxnGetRequest get = 6;
+    TxnPutRequest put = 7;
+    TxnDeleteRequest delete = 8;
+    TxnScanRequest scan = 9;
+
+    // Todo: support batch get, put, delete, scan
+}
+
+message TxnResponse {
+    Error error = 1;
+    TxnRequestType req_type = 2;
+    TxnSetResponse set = 3;
+    TxnBeginResponse begin = 4;
+    TxnCommitResponse commit = 5;
+    TxnRollbackResponse rollback = 6;
+    TxnGetResponse get = 7;
+    TxnPutResponse put = 8;
+    TxnDeleteResponse delete = 9;
+    TxnScanResponse scan = 10;
+}
+
+service TxnKv {
+  rpc Txn(stream TxnRequest) returns (stream TxnResponse) {}
+  rpc Run(TxnRequest) returns (TxnResponse) {}
+}

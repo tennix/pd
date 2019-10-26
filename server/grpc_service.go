@@ -25,6 +25,7 @@ import (
 	"github.com/pingcap/kvproto/pkg/pdpb"
 	log "github.com/pingcap/log"
 	"github.com/pingcap/pd/server/core"
+	tikv "github.com/pingcap/pd/tikv"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 	"google.golang.org/grpc/codes"
@@ -38,7 +39,10 @@ import (
 var notLeaderError = status.Errorf(codes.Unavailable, "not leader")
 
 // GetMembers implements gRPC PDServer.
-func (s *Server) GetMembers(context.Context, *pdpb.GetMembersRequest) (*pdpb.GetMembersResponse, error) {
+func (s *Server) GetMembers(ctx context.Context, req *pdpb.GetMembersRequest) (*pdpb.GetMembersResponse, error) {
+	if s.etcd == nil {
+		return s.pdClient.GetMembers(ctx, s.joins[0])
+	}
 	if s.isClosed() {
 		return nil, status.Errorf(codes.Unknown, "server not started")
 	}
@@ -79,6 +83,12 @@ func (s *Server) Tso(stream pdpb.PD_TsoServer) error {
 			return err
 		}
 		count := request.GetCount()
+		// TODO: get multiple TSOs
+		// if s.etcd == nil {
+		// 	for i := 0 ; i < maxRetryCount; i++ {
+		// 		s.pdClient.GetTS
+		// 	}
+		// }
 		ts, err := s.getRespTS(count)
 		if err != nil {
 			return status.Errorf(codes.Unknown, err.Error())
@@ -101,16 +111,6 @@ func (s *Server) Bootstrap(ctx context.Context, request *pdpb.BootstrapRequest) 
 		return nil, err
 	}
 
-	cluster := s.GetRaftCluster()
-	if cluster != nil {
-		err := &pdpb.Error{
-			Type:    pdpb.ErrorType_ALREADY_BOOTSTRAPPED,
-			Message: "cluster is already bootstrapped",
-		}
-		return &pdpb.BootstrapResponse{
-			Header: s.errorHeader(err),
-		}, nil
-	}
 	if _, err := s.bootstrapCluster(request); err != nil {
 		return nil, status.Errorf(codes.Unknown, err.Error())
 	}
@@ -126,6 +126,14 @@ func (s *Server) IsBootstrapped(ctx context.Context, request *pdpb.IsBootstrappe
 		return nil, err
 	}
 
+	if s.etcd == nil {
+		// TODO: forward request to PD leader
+		return &pdpb.IsBootstrappedResponse{
+			Header:       s.header(),
+			Bootstrapped: true,
+		}, nil
+	}
+
 	cluster := s.GetRaftCluster()
 	return &pdpb.IsBootstrappedResponse{
 		Header:       s.header(),
@@ -137,6 +145,9 @@ func (s *Server) IsBootstrapped(ctx context.Context, request *pdpb.IsBootstrappe
 func (s *Server) AllocID(ctx context.Context, request *pdpb.AllocIDRequest) (*pdpb.AllocIDResponse, error) {
 	if err := s.validateRequest(request.GetHeader()); err != nil {
 		return nil, err
+	}
+	if s.etcd == nil {
+		// TODO: forward request to PD leader
 	}
 
 	// We can use an allocator for all types ID allocation.
@@ -155,6 +166,10 @@ func (s *Server) AllocID(ctx context.Context, request *pdpb.AllocIDRequest) (*pd
 func (s *Server) GetStore(ctx context.Context, request *pdpb.GetStoreRequest) (*pdpb.GetStoreResponse, error) {
 	if err := s.validateRequest(request.GetHeader()); err != nil {
 		return nil, err
+	}
+
+	if s.etcd == nil {
+		// TODO: forward request to PD leader
 	}
 
 	cluster := s.GetRaftCluster()
@@ -195,6 +210,10 @@ func (s *Server) PutStore(ctx context.Context, request *pdpb.PutStoreRequest) (*
 		return nil, err
 	}
 
+	if s.etcd == nil {
+		// TODO: forward request to PD leader
+	}
+
 	cluster := s.GetRaftCluster()
 	if cluster == nil {
 		return &pdpb.PutStoreResponse{Header: s.notBootstrappedHeader()}, nil
@@ -225,6 +244,10 @@ func (s *Server) PutStore(ctx context.Context, request *pdpb.PutStoreRequest) (*
 func (s *Server) GetAllStores(ctx context.Context, request *pdpb.GetAllStoresRequest) (*pdpb.GetAllStoresResponse, error) {
 	if err := s.validateRequest(request.GetHeader()); err != nil {
 		return nil, err
+	}
+
+	if s.etcd == nil {
+		// TODO: forward request to PD leader
 	}
 
 	cluster := s.GetRaftCluster()
@@ -782,4 +805,22 @@ func (s *Server) incompatibleVersion(tag string) *pdpb.ResponseHeader {
 		Type:    pdpb.ErrorType_INCOMPATIBLE_VERSION,
 		Message: msg,
 	})
+}
+
+// TiKV proxy
+
+func (s *Server) Get(ctx context.Context, req *tikv.GetRequest) (*tikv.GetResponse, error) {
+	value, err := s.rawkvClient.Get(ctx, req.GetKey())
+	if err != nil {
+		return &tikv.GetResponse{Error: &tikv.Error{Msg: err.Error()}}, nil
+	}
+	return &tikv.GetResponse{Value: value}, nil
+}
+
+func (s *Server) Put(ctx context.Context, req *tikv.PutRequest) (*tikv.PutResponse, error) {
+	err := s.rawkvClient.Put(ctx, req.GetKey(), req.GetValue())
+	if err != nil {
+		return &tikv.PutResponse{Error: &tikv.Error{Msg: err.Error()}}, nil
+	}
+	return &tikv.PutResponse{Error: nil}, nil
 }

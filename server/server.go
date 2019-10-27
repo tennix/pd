@@ -29,6 +29,7 @@ import (
 
 	"github.com/coreos/go-semver/semver"
 	"github.com/golang/protobuf/proto"
+	"github.com/hashicorp/memberlist"
 	"github.com/pingcap/kvproto/pkg/metapb"
 	"github.com/pingcap/kvproto/pkg/pdpb"
 	log "github.com/pingcap/log"
@@ -42,6 +43,8 @@ import (
 	"github.com/soheilhy/cmux"
 	"github.com/tikv/client-go/config"
 	"github.com/tikv/client-go/rawkv"
+
+	// "github.com/tikv/client-go/txnkv"
 	"go.etcd.io/etcd/clientv3"
 	"go.etcd.io/etcd/embed"
 	"go.etcd.io/etcd/pkg/types"
@@ -79,8 +82,10 @@ type Server struct {
 	serverLoopWg     sync.WaitGroup
 
 	joins       []string
+	memberList  *memberlist.Memberlist
 	pdClient    pd.Client
 	rawkvClient *rawkv.Client
+	// txnkvClient *txnkv.Client
 
 	// Etcd and cluster informations.
 	etcd      *embed.Etcd
@@ -331,7 +336,7 @@ func (s *Server) Run(ctx context.Context) error {
 		for _, member := range resp.Members {
 			fmt.Printf("Members: %v\n", member)
 		}
-		if len(resp.Members) < 3 { // members less than pd replicas
+		if len(resp.Members) <= 3 { // members less than pd replicas
 			log.Info("Etcd servers less than 3")
 			if err := s.startEtcd(ctx); err != nil {
 				return err
@@ -385,6 +390,7 @@ func (s *Server) Run(ctx context.Context) error {
 
 		grpcsvr := grpc.NewServer()
 		tikv.RegisterRawKvServer(grpcsvr, s)
+		// tikv.RegisterTxnKvServer(grpcsvr, s)
 		pdpb.RegisterPDServer(grpcsvr, s)
 		if err := grpcsvr.Serve(grpcListener); err != nil {
 			return err
@@ -396,7 +402,30 @@ func (s *Server) Run(ctx context.Context) error {
 		return err
 	}
 	s.rawkvClient = rawkvClient
-	log.Info("Server run successfully")
+	// txnkvClient, err := txnkv.NewClient(ctx, addrs, cfg)
+	// if err != nil {
+	// 	return err
+	// }
+	// s.txnkvClient = txnkvClient
+	// log.Info("Server run successfully")
+
+	// run gossip memberlist
+	memberlistConfig := memberlist.DefaultLocalConfig()
+	memberlistConfig.Name = s.cfg.Name
+	memberlistConfig.AdvertiseAddr = s.etcdCfg.ACUrls[0].Hostname()
+	list, err := memberlist.Create(memberlistConfig)
+	if err != nil {
+		log.Info("failed to create member", zap.Error(err))
+		return err
+	}
+	log.Info("Gossip member", zap.Reflect("gossip_members", list.Members()))
+	if len(s.joins) != 0 {
+		if _, err := list.Join(s.joins); err != nil {
+			return err
+		}
+	}
+	s.memberList = list
+
 	return nil
 }
 

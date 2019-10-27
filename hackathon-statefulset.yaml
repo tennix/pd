@@ -7,7 +7,7 @@ spec:
     matchLabels:
       app: tikv
   serviceName: kv-headless
-  replicas: 3
+  replicas: 5
   template:
     metadata:
       labels:
@@ -18,7 +18,7 @@ spec:
         emptyDir: {}
       containers:
       - name: pd
-        image: docker.pkg.github.com/tennix/pd/hackathon:v0.1.1
+        image: docker.pkg.github.com/tennix/pd/hackathon:v0.1.2
         command:
         - /bin/sh
         - -c
@@ -26,8 +26,17 @@ spec:
           sleep 20
           ordinal=$(echo ${MY_POD_NAME} | awk -F'-' '{print $NF}')
           if [ $ordinal == "0" ]; then
+            # dns=${MY_POD_NAME}.kv-headless.${MY_NAMESPACE}
+            # until nslookup $dns 2>/dev/null; do
+            #   echo "Wait DNS $dns to be resolvable"
+            #   sleep 2
+            # done
             extraArgs="--initial-cluster=${MY_POD_NAME}=http://$(MY_POD_NAME).kv-headless.${MY_NAMESPACE}:2380"
           else
+            # until curl -s http://kv.${MY_NAMESPACE}:2379/pd/api/v1/members 2>/dev/null; do
+            #   echo "Wait PD service ready"
+            #   sleep 5
+            # done
             extraArgs="--join=http://kv.${MY_NAMESPACE}:2379"
           fi
           /pd-server \
@@ -51,12 +60,15 @@ spec:
         - name: data
           mountPath: /data
       - name: tikv
-        image: docker.pkg.github.com/tennix/pd/hackathon:v0.1.1
+        image: docker.pkg.github.com/tennix/pd/hackathon:v0.1.2
         command:
         - /bin/sh
         - -c
         - |
-          sleep 30
+          until curl -s localhost:2379/pd/api/v1/members 2> /dev/null; do
+            echo "Wait for PD ready"
+            sleep 2
+          done
           /tikv-server \
           --pd=localhost:2379 \
           --advertise-addr=${MY_POD_NAME}.kv-headless.${MY_NAMESPACE}:20160 \

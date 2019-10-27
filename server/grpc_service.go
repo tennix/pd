@@ -27,6 +27,9 @@ import (
 	"github.com/pingcap/pd/server/core"
 	tikv "github.com/pingcap/pd/tikv"
 	"github.com/pkg/errors"
+
+	// "github.com/tikv/client-go/key"
+	// "github.com/tikv/client-go/txnkv/kv"
 	"go.uber.org/zap"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -807,7 +810,7 @@ func (s *Server) incompatibleVersion(tag string) *pdpb.ResponseHeader {
 	})
 }
 
-// TiKV proxy
+// TiKV proxy: Raw
 
 func (s *Server) Get(ctx context.Context, req *tikv.GetRequest) (*tikv.GetResponse, error) {
 	value, err := s.rawkvClient.Get(ctx, req.GetKey())
@@ -823,4 +826,108 @@ func (s *Server) Put(ctx context.Context, req *tikv.PutRequest) (*tikv.PutRespon
 		return &tikv.PutResponse{Error: &tikv.Error{Msg: err.Error()}}, nil
 	}
 	return &tikv.PutResponse{Error: nil}, nil
+}
+
+// TiKV proxy: Txn
+
+func (s *Server) Transaction(stream tikv.TxnKv_TransactionServer) error {
+	return nil
+	// req, err := stream.Recv()
+	// if err != nil {
+	// 	return errors.WithStack(err)
+	// }
+	// if req.ReqType != tikv.TxnRequestType_Begin {
+	// 	return fmt.Errorf("invalid transaction")
+	// }
+	// ctx := stream.Context()
+	// txn, err := s.txnkvClient.Begin(ctx)
+	// if err != nil {
+	// 	return errors.WithStack(err)
+	// }
+	// for {
+	// 	req, err = stream.Recv()
+	// 	if err == io.EOF {
+	// 		return nil
+	// 	}
+	// 	if err != nil {
+	// 		return errors.WithStack(err)
+	// 	}
+	// 	var resp tikv.TxnResponse
+	// 	switch req.ReqType {
+	// 	case tikv.TxnRequestType_Begin:
+	// 	case tikv.TxnRequestType_Get:
+	// 		val, err := txn.Get(ctx, req.Get.GetKey())
+	// 		if err != nil {
+	// 			return errors.WithStack(err)
+	// 		}
+	// 		resp = tikv.TxnResponse{
+	// 			Get: &tikv.TxnGetResponse{Value: val},
+	// 		}
+
+	// 	case tikv.TxnRequestType_Delete:
+	// 		k := req.Delete.GetKey()
+	// 		if err := txn.Delete(key.Key(k)); err != nil {
+	// 			return errors.WithStack(err)
+	// 		}
+	// 		resp = tikv.TxnResponse{
+	// 			Delete: &tikv.TxnDeleteResponse{},
+	// 		}
+	// 	case tikv.TxnRequestType_Put:
+	// 		k := req.Put.GetKey()
+	// 		v := req.Put.GetValue()
+	// 		err = txn.Set(key.Key(k), v)
+	// 		if err != nil {
+	// 			return errors.WithStack(err)
+	// 		}
+	// 		resp = tikv.TxnResponse{
+	// 			Put: &tikv.TxnPutResponse{},
+	// 		}
+	// 	case tikv.TxnRequestType_Scan:
+	// 		startKey := req.Scan.GetStartKey()
+	// 		endKey := req.Scan.GetEndKey()
+	// 		limit := req.Scan.GetLimit()
+	// 		desc := req.Scan.GetDesc()
+	// 		var iter kv.Iterator
+	// 		if desc { // descending order (reverse scan)
+	// 			iter, err = txn.IterReverse(ctx, startKey)
+	// 		} else {
+	// 			iter, err = txn.Iter(ctx, startKey, endKey)
+	// 		}
+	// 		kvPairs := []*tikv.KvPair{}
+	// 		for iter.Valid() {
+	// 			if len(kvPairs) >= int(limit) {
+	// 				break
+	// 			}
+	// 			k := iter.Key()
+	// 			v := iter.Value()
+	// 			kvPairs = append(kvPairs, &tikv.KvPair{Key: []byte(k), Value: v})
+	// 			iter.Next(ctx)
+	// 		}
+	// 		resp = tikv.TxnResponse{
+	// 			Scan: &tikv.TxnScanResponse{Pairs: kvPairs},
+	// 		}
+	// 	case tikv.TxnRequestType_Rollback:
+	// 		if err := txn.Rollback(); err != nil {
+	// 			return errors.WithStack(err)
+	// 		}
+	// 		resp = tikv.TxnResponse{
+	// 			Rollback: &tikv.TxnRollbackResponse{},
+	// 		}
+	// 	case tikv.TxnRequestType_Commit:
+	// 		if err := txn.Commit(ctx); err != nil {
+	// 			return errors.WithStack(err)
+	// 		}
+	// 		resp = tikv.TxnResponse{
+	// 			Commit: &tikv.TxnCommitResponse{},
+	// 		}
+	// 	case tikv.TxnRequestType_Invalid:
+	// 	}
+	// 	if err := stream.Send(&resp); err != nil {
+	// 		return errors.WithStack(err)
+	// 	}
+	// }
+}
+
+func (s *Server) RunOnce(ctx context.Context, req *tikv.TxnRequest) (*tikv.TxnResponse, error) {
+	return nil, nil
 }

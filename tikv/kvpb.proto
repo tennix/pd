@@ -53,7 +53,7 @@ message ScanRequest {
 
 message ScanResponse {
     Error error = 1;
-    repeated KvPair paris = 2;
+    repeated KvPair pairs = 2;
 }
 
 service RawKv {
@@ -149,7 +149,7 @@ message TxnScanRequest {
 }
 
 message TxnScanResponse {
-    repeated KvPair paris = 1;
+    repeated KvPair pairs = 1;
 }
 
 message TxnRequest {
@@ -180,6 +180,6 @@ message TxnResponse {
 }
 
 service TxnKv {
-  rpc Txn(stream TxnRequest) returns (stream TxnResponse) {}
-  rpc Run(TxnRequest) returns (TxnResponse) {}
+  rpc Transaction(stream TxnRequest) returns (stream TxnResponse) {}
+  rpc RunOnce(TxnRequest) returns (TxnResponse) {}
 }

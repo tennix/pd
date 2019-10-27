@@ -14,9 +14,9 @@ require (
 	github.com/gogo/protobuf v1.0.0
 	github.com/golang/protobuf v1.3.2
 	github.com/google/btree v0.0.0-20180813153112-4030bb1f1f0c
-	github.com/gorilla/context v0.0.0-20160226214623-1ea25387ff6f // indirect
 	github.com/gorilla/mux v1.7.0
 	github.com/grpc-ecosystem/go-grpc-prometheus v1.2.0
+	github.com/hashicorp/memberlist v0.1.5
 	github.com/juju/ratelimit v1.0.1
 	github.com/mattn/go-shellwords v1.0.3
 	github.com/montanaflynn/stats v0.5.0

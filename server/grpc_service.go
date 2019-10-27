@@ -829,7 +829,15 @@ func (s *Server) BatchGet(ctx context.Context, req *tikv.BatchGetRequest) (*tikv
 	return &response, nil
 }
 
-func (s *Server) PutBatchPut(ctx context.Context, req *tikv.BatchPutRequest) (*tikv.BatchPutResponse, error) {
+func (s *Server) Put(ctx context.Context, req *tikv.PutRequest) (*tikv.PutResponse, error) {
+	err := s.rawkvClient.Put(ctx, req.GetKey(), req.GetValue())
+	if err != nil {
+		return &tikv.PutResponse{Error: &tikv.Error{Msg: err.Error()}}, nil
+	}
+	return &tikv.PutResponse{Error: nil}, nil
+}
+
+func (s *Server) BatchPut(ctx context.Context, req *tikv.BatchPutRequest) (*tikv.BatchPutResponse, error) {
 	var keys [][]byte
 	var values [][]byte
 	for _, pair := range req.Pairs {

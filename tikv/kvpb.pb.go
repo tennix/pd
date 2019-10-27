@@ -325,6 +325,84 @@ func (m *PutResponse) GetError() *Error {
 	return nil
 }
 
+type BatchPutRequest struct {
+	Pairs                []*KvPair `protobuf:"bytes,1,rep,name=pairs,proto3" json:"pairs,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}  `json:"-"`
+	XXX_unrecognized     []byte    `json:"-"`
+	XXX_sizecache        int32     `json:"-"`
+}
+
+func (m *BatchPutRequest) Reset()         { *m = BatchPutRequest{} }
+func (m *BatchPutRequest) String() string { return proto.CompactTextString(m) }
+func (*BatchPutRequest) ProtoMessage()    {}
+func (*BatchPutRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_79d46ba518369a41, []int{6}
+}
+
+func (m *BatchPutRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_BatchPutRequest.Unmarshal(m, b)
+}
+func (m *BatchPutRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_BatchPutRequest.Marshal(b, m, deterministic)
+}
+func (m *BatchPutRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_BatchPutRequest.Merge(m, src)
+}
+func (m *BatchPutRequest) XXX_Size() int {
+	return xxx_messageInfo_BatchPutRequest.Size(m)
+}
+func (m *BatchPutRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_BatchPutRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_BatchPutRequest proto.InternalMessageInfo
+
+func (m *BatchPutRequest) GetPairs() []*KvPair {
+	if m != nil {
+		return m.Pairs
+	}
+	return nil
+}
+
+type BatchPutResponse struct {
+	Error                *Error   `protobuf:"bytes,1,opt,name=error,proto3" json:"error,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *BatchPutResponse) Reset()         { *m = BatchPutResponse{} }
+func (m *BatchPutResponse) String() string { return proto.CompactTextString(m) }
+func (*BatchPutResponse) ProtoMessage()    {}
+func (*BatchPutResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_79d46ba518369a41, []int{7}
+}
+
+func (m *BatchPutResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_BatchPutResponse.Unmarshal(m, b)
+}
+func (m *BatchPutResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_BatchPutResponse.Marshal(b, m, deterministic)
+}
+func (m *BatchPutResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_BatchPutResponse.Merge(m, src)
+}
+func (m *BatchPutResponse) XXX_Size() int {
+	return xxx_messageInfo_BatchPutResponse.Size(m)
+}
+func (m *BatchPutResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_BatchPutResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_BatchPutResponse proto.InternalMessageInfo
+
+func (m *BatchPutResponse) GetError() *Error {
+	if m != nil {
+		return m.Error
+	}
+	return nil
+}
+
 type DeleteRequest struct {
 	Key                  []byte   `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
@@ -336,7 +414,7 @@ func (m *DeleteRequest) Reset()         { *m = DeleteRequest{} }
 func (m *DeleteRequest) String() string { return proto.CompactTextString(m) }
 func (*DeleteRequest) ProtoMessage()    {}
 func (*DeleteRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_79d46ba518369a41, []int{6}
+	return fileDescriptor_79d46ba518369a41, []int{8}
 }
 
 func (m *DeleteRequest) XXX_Unmarshal(b []byte) error {
@@ -375,7 +453,7 @@ func (m *DeleteResponse) Reset()         { *m = DeleteResponse{} }
 func (m *DeleteResponse) String() string { return proto.CompactTextString(m) }
 func (*DeleteResponse) ProtoMessage()    {}
 func (*DeleteResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_79d46ba518369a41, []int{7}
+	return fileDescriptor_79d46ba518369a41, []int{9}
 }
 
 func (m *DeleteResponse) XXX_Unmarshal(b []byte) error {
@@ -403,6 +481,256 @@ func (m *DeleteResponse) GetError() *Error {
 	return nil
 }
 
+type BatchDeleteRequest struct {
+	Keys                 [][]byte `protobuf:"bytes,1,rep,name=keys,proto3" json:"keys,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *BatchDeleteRequest) Reset()         { *m = BatchDeleteRequest{} }
+func (m *BatchDeleteRequest) String() string { return proto.CompactTextString(m) }
+func (*BatchDeleteRequest) ProtoMessage()    {}
+func (*BatchDeleteRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_79d46ba518369a41, []int{10}
+}
+
+func (m *BatchDeleteRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_BatchDeleteRequest.Unmarshal(m, b)
+}
+func (m *BatchDeleteRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_BatchDeleteRequest.Marshal(b, m, deterministic)
+}
+func (m *BatchDeleteRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_BatchDeleteRequest.Merge(m, src)
+}
+func (m *BatchDeleteRequest) XXX_Size() int {
+	return xxx_messageInfo_BatchDeleteRequest.Size(m)
+}
+func (m *BatchDeleteRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_BatchDeleteRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_BatchDeleteRequest proto.InternalMessageInfo
+
+func (m *BatchDeleteRequest) GetKeys() [][]byte {
+	if m != nil {
+		return m.Keys
+	}
+	return nil
+}
+
+type BatchDeleteResponse struct {
+	Error                *Error   `protobuf:"bytes,1,opt,name=error,proto3" json:"error,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *BatchDeleteResponse) Reset()         { *m = BatchDeleteResponse{} }
+func (m *BatchDeleteResponse) String() string { return proto.CompactTextString(m) }
+func (*BatchDeleteResponse) ProtoMessage()    {}
+func (*BatchDeleteResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_79d46ba518369a41, []int{11}
+}
+
+func (m *BatchDeleteResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_BatchDeleteResponse.Unmarshal(m, b)
+}
+func (m *BatchDeleteResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_BatchDeleteResponse.Marshal(b, m, deterministic)
+}
+func (m *BatchDeleteResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_BatchDeleteResponse.Merge(m, src)
+}
+func (m *BatchDeleteResponse) XXX_Size() int {
+	return xxx_messageInfo_BatchDeleteResponse.Size(m)
+}
+func (m *BatchDeleteResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_BatchDeleteResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_BatchDeleteResponse proto.InternalMessageInfo
+
+func (m *BatchDeleteResponse) GetError() *Error {
+	if m != nil {
+		return m.Error
+	}
+	return nil
+}
+
+type BatchGetRequest struct {
+	Keys                 [][]byte `protobuf:"bytes,1,rep,name=keys,proto3" json:"keys,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *BatchGetRequest) Reset()         { *m = BatchGetRequest{} }
+func (m *BatchGetRequest) String() string { return proto.CompactTextString(m) }
+func (*BatchGetRequest) ProtoMessage()    {}
+func (*BatchGetRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_79d46ba518369a41, []int{12}
+}
+
+func (m *BatchGetRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_BatchGetRequest.Unmarshal(m, b)
+}
+func (m *BatchGetRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_BatchGetRequest.Marshal(b, m, deterministic)
+}
+func (m *BatchGetRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_BatchGetRequest.Merge(m, src)
+}
+func (m *BatchGetRequest) XXX_Size() int {
+	return xxx_messageInfo_BatchGetRequest.Size(m)
+}
+func (m *BatchGetRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_BatchGetRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_BatchGetRequest proto.InternalMessageInfo
+
+func (m *BatchGetRequest) GetKeys() [][]byte {
+	if m != nil {
+		return m.Keys
+	}
+	return nil
+}
+
+type BatchGetResponse struct {
+	Error                *Error    `protobuf:"bytes,1,opt,name=error,proto3" json:"error,omitempty"`
+	Pairs                []*KvPair `protobuf:"bytes,2,rep,name=pairs,proto3" json:"pairs,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}  `json:"-"`
+	XXX_unrecognized     []byte    `json:"-"`
+	XXX_sizecache        int32     `json:"-"`
+}
+
+func (m *BatchGetResponse) Reset()         { *m = BatchGetResponse{} }
+func (m *BatchGetResponse) String() string { return proto.CompactTextString(m) }
+func (*BatchGetResponse) ProtoMessage()    {}
+func (*BatchGetResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_79d46ba518369a41, []int{13}
+}
+
+func (m *BatchGetResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_BatchGetResponse.Unmarshal(m, b)
+}
+func (m *BatchGetResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_BatchGetResponse.Marshal(b, m, deterministic)
+}
+func (m *BatchGetResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_BatchGetResponse.Merge(m, src)
+}
+func (m *BatchGetResponse) XXX_Size() int {
+	return xxx_messageInfo_BatchGetResponse.Size(m)
+}
+func (m *BatchGetResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_BatchGetResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_BatchGetResponse proto.InternalMessageInfo
+
+func (m *BatchGetResponse) GetError() *Error {
+	if m != nil {
+		return m.Error
+	}
+	return nil
+}
+
+func (m *BatchGetResponse) GetPairs() []*KvPair {
+	if m != nil {
+		return m.Pairs
+	}
+	return nil
+}
+
+type DeleteRangeRequest struct {
+	StartKey             []byte   `protobuf:"bytes,1,opt,name=startKey,proto3" json:"startKey,omitempty"`
+	EndKey               []byte   `protobuf:"bytes,2,opt,name=endKey,proto3" json:"endKey,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *DeleteRangeRequest) Reset()         { *m = DeleteRangeRequest{} }
+func (m *DeleteRangeRequest) String() string { return proto.CompactTextString(m) }
+func (*DeleteRangeRequest) ProtoMessage()    {}
+func (*DeleteRangeRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_79d46ba518369a41, []int{14}
+}
+
+func (m *DeleteRangeRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_DeleteRangeRequest.Unmarshal(m, b)
+}
+func (m *DeleteRangeRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_DeleteRangeRequest.Marshal(b, m, deterministic)
+}
+func (m *DeleteRangeRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DeleteRangeRequest.Merge(m, src)
+}
+func (m *DeleteRangeRequest) XXX_Size() int {
+	return xxx_messageInfo_DeleteRangeRequest.Size(m)
+}
+func (m *DeleteRangeRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_DeleteRangeRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_DeleteRangeRequest proto.InternalMessageInfo
+
+func (m *DeleteRangeRequest) GetStartKey() []byte {
+	if m != nil {
+		return m.StartKey
+	}
+	return nil
+}
+
+func (m *DeleteRangeRequest) GetEndKey() []byte {
+	if m != nil {
+		return m.EndKey
+	}
+	return nil
+}
+
+type DeleteRangeResponse struct {
+	Error                *Error   `protobuf:"bytes,1,opt,name=error,proto3" json:"error,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *DeleteRangeResponse) Reset()         { *m = DeleteRangeResponse{} }
+func (m *DeleteRangeResponse) String() string { return proto.CompactTextString(m) }
+func (*DeleteRangeResponse) ProtoMessage()    {}
+func (*DeleteRangeResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_79d46ba518369a41, []int{15}
+}
+
+func (m *DeleteRangeResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_DeleteRangeResponse.Unmarshal(m, b)
+}
+func (m *DeleteRangeResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_DeleteRangeResponse.Marshal(b, m, deterministic)
+}
+func (m *DeleteRangeResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DeleteRangeResponse.Merge(m, src)
+}
+func (m *DeleteRangeResponse) XXX_Size() int {
+	return xxx_messageInfo_DeleteRangeResponse.Size(m)
+}
+func (m *DeleteRangeResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_DeleteRangeResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_DeleteRangeResponse proto.InternalMessageInfo
+
+func (m *DeleteRangeResponse) GetError() *Error {
+	if m != nil {
+		return m.Error
+	}
+	return nil
+}
+
 type ScanRequest struct {
 	StartKey             []byte   `protobuf:"bytes,1,opt,name=start_key,json=startKey,proto3" json:"start_key,omitempty"`
 	EndKey               []byte   `protobuf:"bytes,2,opt,name=end_key,json=endKey,proto3" json:"end_key,omitempty"`
@@ -417,7 +745,7 @@ func (m *ScanRequest) Reset()         { *m = ScanRequest{} }
 func (m *ScanRequest) String() string { return proto.CompactTextString(m) }
 func (*ScanRequest) ProtoMessage()    {}
 func (*ScanRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_79d46ba518369a41, []int{8}
+	return fileDescriptor_79d46ba518369a41, []int{16}
 }
 
 func (m *ScanRequest) XXX_Unmarshal(b []byte) error {
@@ -467,8 +795,9 @@ func (m *ScanRequest) GetDesc() bool {
 }
 
 type ScanResponse struct {
-	Error                *Error    `protobuf:"bytes,1,opt,name=error,proto3" json:"error,omitempty"`
-	Paris                []*KvPair `protobuf:"bytes,2,rep,name=paris,proto3" json:"paris,omitempty"`
+	Error *Error `protobuf:"bytes,1,opt,name=error,proto3" json:"error,omitempty"`
+	//    repeated KvPair paris = 2; though it is a typo, it's amazing
+	Pairs                []*KvPair `protobuf:"bytes,2,rep,name=pairs,proto3" json:"pairs,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}  `json:"-"`
 	XXX_unrecognized     []byte    `json:"-"`
 	XXX_sizecache        int32     `json:"-"`
@@ -478,7 +807,7 @@ func (m *ScanResponse) Reset()         { *m = ScanResponse{} }
 func (m *ScanResponse) String() string { return proto.CompactTextString(m) }
 func (*ScanResponse) ProtoMessage()    {}
 func (*ScanResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_79d46ba518369a41, []int{9}
+	return fileDescriptor_79d46ba518369a41, []int{17}
 }
 
 func (m *ScanResponse) XXX_Unmarshal(b []byte) error {
@@ -506,9 +835,120 @@ func (m *ScanResponse) GetError() *Error {
 	return nil
 }
 
-func (m *ScanResponse) GetParis() []*KvPair {
+func (m *ScanResponse) GetPairs() []*KvPair {
 	if m != nil {
-		return m.Paris
+		return m.Pairs
+	}
+	return nil
+}
+
+type ReverseScanRequest struct {
+	StartKey             []byte   `protobuf:"bytes,1,opt,name=start_key,json=startKey,proto3" json:"start_key,omitempty"`
+	EndKey               []byte   `protobuf:"bytes,2,opt,name=end_key,json=endKey,proto3" json:"end_key,omitempty"`
+	Limit                uint32   `protobuf:"varint,3,opt,name=limit,proto3" json:"limit,omitempty"`
+	Desc                 bool     `protobuf:"varint,4,opt,name=desc,proto3" json:"desc,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ReverseScanRequest) Reset()         { *m = ReverseScanRequest{} }
+func (m *ReverseScanRequest) String() string { return proto.CompactTextString(m) }
+func (*ReverseScanRequest) ProtoMessage()    {}
+func (*ReverseScanRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_79d46ba518369a41, []int{18}
+}
+
+func (m *ReverseScanRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ReverseScanRequest.Unmarshal(m, b)
+}
+func (m *ReverseScanRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ReverseScanRequest.Marshal(b, m, deterministic)
+}
+func (m *ReverseScanRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ReverseScanRequest.Merge(m, src)
+}
+func (m *ReverseScanRequest) XXX_Size() int {
+	return xxx_messageInfo_ReverseScanRequest.Size(m)
+}
+func (m *ReverseScanRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_ReverseScanRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ReverseScanRequest proto.InternalMessageInfo
+
+func (m *ReverseScanRequest) GetStartKey() []byte {
+	if m != nil {
+		return m.StartKey
+	}
+	return nil
+}
+
+func (m *ReverseScanRequest) GetEndKey() []byte {
+	if m != nil {
+		return m.EndKey
+	}
+	return nil
+}
+
+func (m *ReverseScanRequest) GetLimit() uint32 {
+	if m != nil {
+		return m.Limit
+	}
+	return 0
+}
+
+func (m *ReverseScanRequest) GetDesc() bool {
+	if m != nil {
+		return m.Desc
+	}
+	return false
+}
+
+type ReverseScanResponse struct {
+	Error *Error `protobuf:"bytes,1,opt,name=error,proto3" json:"error,omitempty"`
+	//    repeated KvPair paris = 2; though it is a typo, it's amazing
+	Pairs                []*KvPair `protobuf:"bytes,2,rep,name=pairs,proto3" json:"pairs,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}  `json:"-"`
+	XXX_unrecognized     []byte    `json:"-"`
+	XXX_sizecache        int32     `json:"-"`
+}
+
+func (m *ReverseScanResponse) Reset()         { *m = ReverseScanResponse{} }
+func (m *ReverseScanResponse) String() string { return proto.CompactTextString(m) }
+func (*ReverseScanResponse) ProtoMessage()    {}
+func (*ReverseScanResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_79d46ba518369a41, []int{19}
+}
+
+func (m *ReverseScanResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ReverseScanResponse.Unmarshal(m, b)
+}
+func (m *ReverseScanResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ReverseScanResponse.Marshal(b, m, deterministic)
+}
+func (m *ReverseScanResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ReverseScanResponse.Merge(m, src)
+}
+func (m *ReverseScanResponse) XXX_Size() int {
+	return xxx_messageInfo_ReverseScanResponse.Size(m)
+}
+func (m *ReverseScanResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_ReverseScanResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ReverseScanResponse proto.InternalMessageInfo
+
+func (m *ReverseScanResponse) GetError() *Error {
+	if m != nil {
+		return m.Error
+	}
+	return nil
+}
+
+func (m *ReverseScanResponse) GetPairs() []*KvPair {
+	if m != nil {
+		return m.Pairs
 	}
 	return nil
 }
@@ -524,7 +964,7 @@ func (m *TxnSetRequest) Reset()         { *m = TxnSetRequest{} }
 func (m *TxnSetRequest) String() string { return proto.CompactTextString(m) }
 func (*TxnSetRequest) ProtoMessage()    {}
 func (*TxnSetRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_79d46ba518369a41, []int{10}
+	return fileDescriptor_79d46ba518369a41, []int{20}
 }
 
 func (m *TxnSetRequest) XXX_Unmarshal(b []byte) error {
@@ -562,7 +1002,7 @@ func (m *TxnSetResponse) Reset()         { *m = TxnSetResponse{} }
 func (m *TxnSetResponse) String() string { return proto.CompactTextString(m) }
 func (*TxnSetResponse) ProtoMessage()    {}
 func (*TxnSetResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_79d46ba518369a41, []int{11}
+	return fileDescriptor_79d46ba518369a41, []int{21}
 }
 
 func (m *TxnSetResponse) XXX_Unmarshal(b []byte) error {
@@ -595,7 +1035,7 @@ func (m *TxnBeginRequest) Reset()         { *m = TxnBeginRequest{} }
 func (m *TxnBeginRequest) String() string { return proto.CompactTextString(m) }
 func (*TxnBeginRequest) ProtoMessage()    {}
 func (*TxnBeginRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_79d46ba518369a41, []int{12}
+	return fileDescriptor_79d46ba518369a41, []int{22}
 }
 
 func (m *TxnBeginRequest) XXX_Unmarshal(b []byte) error {
@@ -634,7 +1074,7 @@ func (m *TxnBeginResponse) Reset()         { *m = TxnBeginResponse{} }
 func (m *TxnBeginResponse) String() string { return proto.CompactTextString(m) }
 func (*TxnBeginResponse) ProtoMessage()    {}
 func (*TxnBeginResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_79d46ba518369a41, []int{13}
+	return fileDescriptor_79d46ba518369a41, []int{23}
 }
 
 func (m *TxnBeginResponse) XXX_Unmarshal(b []byte) error {
@@ -672,7 +1112,7 @@ func (m *TxnCommitRequest) Reset()         { *m = TxnCommitRequest{} }
 func (m *TxnCommitRequest) String() string { return proto.CompactTextString(m) }
 func (*TxnCommitRequest) ProtoMessage()    {}
 func (*TxnCommitRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_79d46ba518369a41, []int{14}
+	return fileDescriptor_79d46ba518369a41, []int{24}
 }
 
 func (m *TxnCommitRequest) XXX_Unmarshal(b []byte) error {
@@ -704,7 +1144,7 @@ func (m *TxnCommitResponse) Reset()         { *m = TxnCommitResponse{} }
 func (m *TxnCommitResponse) String() string { return proto.CompactTextString(m) }
 func (*TxnCommitResponse) ProtoMessage()    {}
 func (*TxnCommitResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_79d46ba518369a41, []int{15}
+	return fileDescriptor_79d46ba518369a41, []int{25}
 }
 
 func (m *TxnCommitResponse) XXX_Unmarshal(b []byte) error {
@@ -742,7 +1182,7 @@ func (m *TxnRollbackRequest) Reset()         { *m = TxnRollbackRequest{} }
 func (m *TxnRollbackRequest) String() string { return proto.CompactTextString(m) }
 func (*TxnRollbackRequest) ProtoMessage()    {}
 func (*TxnRollbackRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_79d46ba518369a41, []int{16}
+	return fileDescriptor_79d46ba518369a41, []int{26}
 }
 
 func (m *TxnRollbackRequest) XXX_Unmarshal(b []byte) error {
@@ -773,7 +1213,7 @@ func (m *TxnRollbackResponse) Reset()         { *m = TxnRollbackResponse{} }
 func (m *TxnRollbackResponse) String() string { return proto.CompactTextString(m) }
 func (*TxnRollbackResponse) ProtoMessage()    {}
 func (*TxnRollbackResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_79d46ba518369a41, []int{17}
+	return fileDescriptor_79d46ba518369a41, []int{27}
 }
 
 func (m *TxnRollbackResponse) XXX_Unmarshal(b []byte) error {
@@ -805,7 +1245,7 @@ func (m *TxnGetRequest) Reset()         { *m = TxnGetRequest{} }
 func (m *TxnGetRequest) String() string { return proto.CompactTextString(m) }
 func (*TxnGetRequest) ProtoMessage()    {}
 func (*TxnGetRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_79d46ba518369a41, []int{18}
+	return fileDescriptor_79d46ba518369a41, []int{28}
 }
 
 func (m *TxnGetRequest) XXX_Unmarshal(b []byte) error {
@@ -844,7 +1284,7 @@ func (m *TxnGetResponse) Reset()         { *m = TxnGetResponse{} }
 func (m *TxnGetResponse) String() string { return proto.CompactTextString(m) }
 func (*TxnGetResponse) ProtoMessage()    {}
 func (*TxnGetResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_79d46ba518369a41, []int{19}
+	return fileDescriptor_79d46ba518369a41, []int{29}
 }
 
 func (m *TxnGetResponse) XXX_Unmarshal(b []byte) error {
@@ -884,7 +1324,7 @@ func (m *TxnPutRequest) Reset()         { *m = TxnPutRequest{} }
 func (m *TxnPutRequest) String() string { return proto.CompactTextString(m) }
 func (*TxnPutRequest) ProtoMessage()    {}
 func (*TxnPutRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_79d46ba518369a41, []int{20}
+	return fileDescriptor_79d46ba518369a41, []int{30}
 }
 
 func (m *TxnPutRequest) XXX_Unmarshal(b []byte) error {
@@ -929,7 +1369,7 @@ func (m *TxnPutResponse) Reset()         { *m = TxnPutResponse{} }
 func (m *TxnPutResponse) String() string { return proto.CompactTextString(m) }
 func (*TxnPutResponse) ProtoMessage()    {}
 func (*TxnPutResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_79d46ba518369a41, []int{21}
+	return fileDescriptor_79d46ba518369a41, []int{31}
 }
 
 func (m *TxnPutResponse) XXX_Unmarshal(b []byte) error {
@@ -961,7 +1401,7 @@ func (m *TxnDeleteRequest) Reset()         { *m = TxnDeleteRequest{} }
 func (m *TxnDeleteRequest) String() string { return proto.CompactTextString(m) }
 func (*TxnDeleteRequest) ProtoMessage()    {}
 func (*TxnDeleteRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_79d46ba518369a41, []int{22}
+	return fileDescriptor_79d46ba518369a41, []int{32}
 }
 
 func (m *TxnDeleteRequest) XXX_Unmarshal(b []byte) error {
@@ -999,7 +1439,7 @@ func (m *TxnDeleteResponse) Reset()         { *m = TxnDeleteResponse{} }
 func (m *TxnDeleteResponse) String() string { return proto.CompactTextString(m) }
 func (*TxnDeleteResponse) ProtoMessage()    {}
 func (*TxnDeleteResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_79d46ba518369a41, []int{23}
+	return fileDescriptor_79d46ba518369a41, []int{33}
 }
 
 func (m *TxnDeleteResponse) XXX_Unmarshal(b []byte) error {
@@ -1036,7 +1476,7 @@ func (m *TxnScanRequest) Reset()         { *m = TxnScanRequest{} }
 func (m *TxnScanRequest) String() string { return proto.CompactTextString(m) }
 func (*TxnScanRequest) ProtoMessage()    {}
 func (*TxnScanRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_79d46ba518369a41, []int{24}
+	return fileDescriptor_79d46ba518369a41, []int{34}
 }
 
 func (m *TxnScanRequest) XXX_Unmarshal(b []byte) error {
@@ -1096,7 +1536,7 @@ func (m *TxnScanResponse) Reset()         { *m = TxnScanResponse{} }
 func (m *TxnScanResponse) String() string { return proto.CompactTextString(m) }
 func (*TxnScanResponse) ProtoMessage()    {}
 func (*TxnScanResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_79d46ba518369a41, []int{25}
+	return fileDescriptor_79d46ba518369a41, []int{35}
 }
 
 func (m *TxnScanResponse) XXX_Unmarshal(b []byte) error {
@@ -1143,7 +1583,7 @@ func (m *TxnRequest) Reset()         { *m = TxnRequest{} }
 func (m *TxnRequest) String() string { return proto.CompactTextString(m) }
 func (*TxnRequest) ProtoMessage()    {}
 func (*TxnRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_79d46ba518369a41, []int{26}
+	return fileDescriptor_79d46ba518369a41, []int{36}
 }
 
 func (m *TxnRequest) XXX_Unmarshal(b []byte) error {
@@ -1247,7 +1687,7 @@ func (m *TxnResponse) Reset()         { *m = TxnResponse{} }
 func (m *TxnResponse) String() string { return proto.CompactTextString(m) }
 func (*TxnResponse) ProtoMessage()    {}
 func (*TxnResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_79d46ba518369a41, []int{27}
+	return fileDescriptor_79d46ba518369a41, []int{37}
 }
 
 func (m *TxnResponse) XXX_Unmarshal(b []byte) error {
@@ -1346,10 +1786,20 @@ func init() {
 	proto.RegisterType((*GetResponse)(nil), "kv.GetResponse")
 	proto.RegisterType((*PutRequest)(nil), "kv.PutRequest")
 	proto.RegisterType((*PutResponse)(nil), "kv.PutResponse")
+	proto.RegisterType((*BatchPutRequest)(nil), "kv.BatchPutRequest")
+	proto.RegisterType((*BatchPutResponse)(nil), "kv.BatchPutResponse")
 	proto.RegisterType((*DeleteRequest)(nil), "kv.DeleteRequest")
 	proto.RegisterType((*DeleteResponse)(nil), "kv.DeleteResponse")
+	proto.RegisterType((*BatchDeleteRequest)(nil), "kv.BatchDeleteRequest")
+	proto.RegisterType((*BatchDeleteResponse)(nil), "kv.BatchDeleteResponse")
+	proto.RegisterType((*BatchGetRequest)(nil), "kv.BatchGetRequest")
+	proto.RegisterType((*BatchGetResponse)(nil), "kv.BatchGetResponse")
+	proto.RegisterType((*DeleteRangeRequest)(nil), "kv.DeleteRangeRequest")
+	proto.RegisterType((*DeleteRangeResponse)(nil), "kv.DeleteRangeResponse")
 	proto.RegisterType((*ScanRequest)(nil), "kv.ScanRequest")
 	proto.RegisterType((*ScanResponse)(nil), "kv.ScanResponse")
+	proto.RegisterType((*ReverseScanRequest)(nil), "kv.ReverseScanRequest")
+	proto.RegisterType((*ReverseScanResponse)(nil), "kv.ReverseScanResponse")
 	proto.RegisterType((*TxnSetRequest)(nil), "kv.TxnSetRequest")
 	proto.RegisterType((*TxnSetResponse)(nil), "kv.TxnSetResponse")
 	proto.RegisterType((*TxnBeginRequest)(nil), "kv.TxnBeginRequest")
@@ -1373,61 +1823,74 @@ func init() {
 func init() { proto.RegisterFile("kvpb.proto", fileDescriptor_79d46ba518369a41) }
 
 var fileDescriptor_79d46ba518369a41 = []byte{
-	// 860 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x56, 0x5d, 0x6f, 0xdb, 0x36,
-	0x14, 0x8d, 0x2c, 0xcb, 0x96, 0xaf, 0xf2, 0xa1, 0x32, 0xe9, 0xaa, 0xae, 0xc0, 0xea, 0x72, 0x41,
-	0xe7, 0x15, 0x89, 0x91, 0x39, 0x03, 0xf6, 0xde, 0x75, 0x08, 0x06, 0xbf, 0x64, 0xac, 0xde, 0xf6,
-	0x60, 0x28, 0x36, 0x61, 0x78, 0x76, 0x24, 0x45, 0xa2, 0x34, 0xfb, 0x47, 0xec, 0xf7, 0xec, 0xef,
-	0x0d, 0xbc, 0xa4, 0x3e, 0xb8, 0xc2, 0xad, 0xb1, 0x87, 0xbd, 0x51, 0xe4, 0xb9, 0xf7, 0x9e, 0x7b,
-	0xcf, 0x21, 0x21, 0x80, 0x75, 0x99, 0x3e, 0x8c, 0xd3, 0x2c, 0x11, 0x09, 0xe9, 0xac, 0x4b, 0xfa,
-	0x12, 0x9c, 0x5f, 0xb2, 0x2c, 0xc9, 0x88, 0x0f, 0xf6, 0x63, 0xbe, 0x0c, 0xac, 0xa1, 0x35, 0x1a,
-	0x30, 0xb9, 0xa4, 0x37, 0xd0, 0x9b, 0x96, 0xf7, 0xd1, 0x0a, 0xcf, 0xd6, 0x7c, 0x87, 0x67, 0xc7,
-	0x4c, 0x2e, 0xc9, 0x05, 0x38, 0x65, 0xb4, 0x29, 0x78, 0xd0, 0xc1, 0x3d, 0xf5, 0x41, 0xbf, 0x01,
-	0xb8, 0xe3, 0x82, 0xf1, 0xa7, 0x82, 0xe7, 0xe2, 0xd3, 0x28, 0xfa, 0x01, 0x3c, 0x3c, 0xcf, 0xd3,
-	0x24, 0xce, 0x39, 0x79, 0x0d, 0x0e, 0x97, 0xb5, 0x11, 0xe2, 0x4d, 0x06, 0xe3, 0x75, 0x39, 0x46,
-	0x32, 0x4c, 0xed, 0xef, 0xa9, 0xf2, 0x23, 0xc0, 0x7d, 0xb1, 0xbf, 0xca, 0x9e, 0xa8, 0x31, 0x78,
-	0x18, 0x75, 0x60, 0x6d, 0xfa, 0x06, 0x4e, 0x3e, 0xf0, 0x0d, 0x17, 0x7c, 0x7f, 0x3b, 0x3f, 0xc0,
-	0x69, 0x05, 0x39, 0x34, 0xeb, 0x23, 0x78, 0x1f, 0xe7, 0x51, 0x5c, 0xe5, 0x7c, 0x05, 0x83, 0x5c,
-	0x44, 0x99, 0x98, 0x35, 0x99, 0x5d, 0xdc, 0x98, 0xf2, 0x1d, 0x79, 0x01, 0x7d, 0x1e, 0x2f, 0xf0,
-	0x48, 0x75, 0xd2, 0xe3, 0xf1, 0x62, 0xaa, 0x1a, 0xdc, 0xac, 0x1e, 0x57, 0x22, 0xb0, 0x87, 0xd6,
-	0xe8, 0x84, 0xa9, 0x0f, 0x42, 0xa0, 0xbb, 0xe0, 0xf9, 0x3c, 0xe8, 0x0e, 0xad, 0x91, 0xcb, 0x70,
-	0x4d, 0x7f, 0x83, 0x63, 0x55, 0xee, 0xd0, 0x89, 0x0f, 0xc1, 0x49, 0xa3, 0x6c, 0x95, 0x07, 0x9d,
-	0xa1, 0x3d, 0xf2, 0x26, 0x20, 0x01, 0xca, 0x04, 0x4c, 0x1d, 0xd0, 0x1b, 0x38, 0x09, 0xb7, 0xf1,
-	0xc7, 0x46, 0xe6, 0xd7, 0xe0, 0x45, 0x85, 0x48, 0x66, 0xf3, 0xe4, 0x51, 0x72, 0xb2, 0xb0, 0x3c,
-	0xc8, 0xad, 0x9f, 0x71, 0x87, 0xfa, 0x70, 0x5a, 0x45, 0x28, 0x1a, 0xf4, 0x0a, 0xce, 0xc2, 0x6d,
-	0xfc, 0x9e, 0x2f, 0x57, 0xf5, 0x24, 0x5e, 0x82, 0x6a, 0x7c, 0x26, 0x72, 0x4c, 0xd1, 0x65, 0x7d,
-	0xfc, 0x0e, 0x73, 0x7a, 0x0d, 0x7e, 0x83, 0xd6, 0x8d, 0x7c, 0x06, 0x4e, 0x10, 0xae, 0x6a, 0xeb,
-	0xec, 0xf4, 0x06, 0x9e, 0xb5, 0xf6, 0x74, 0x8e, 0x57, 0x30, 0x50, 0x9c, 0x9b, 0x24, 0xae, 0xda,
-	0x08, 0x73, 0x7a, 0x01, 0x24, 0xdc, 0xc6, 0x2c, 0xd9, 0x6c, 0x1e, 0xa2, 0xf9, 0xba, 0xca, 0xf3,
-	0x1c, 0xce, 0x8d, 0x5d, 0xdd, 0xcf, 0x1b, 0x9c, 0xc9, 0x67, 0xad, 0xff, 0x16, 0x87, 0xd0, 0x76,
-	0x7f, 0x6d, 0x53, 0xab, 0x6d, 0xd3, 0x9f, 0x30, 0xd5, 0x7f, 0xf0, 0xb7, 0x9a, 0x72, 0xcb, 0xe2,
-	0xf4, 0x12, 0x07, 0xf1, 0x25, 0x13, 0x9f, 0xe3, 0x68, 0x4c, 0x1f, 0xd3, 0x54, 0x49, 0xf6, 0x3f,
-	0x3a, 0xf5, 0x16, 0x2d, 0x61, 0x98, 0xb5, 0xf6, 0xa2, 0xb5, 0xcf, 0x8b, 0x7f, 0xd9, 0x00, 0x52,
-	0x0f, 0xcd, 0xf1, 0x1a, 0xdc, 0x8c, 0x3f, 0xcd, 0xc4, 0x2e, 0x55, 0x43, 0x3d, 0x9d, 0x10, 0x19,
-	0xd3, 0x20, 0xc2, 0x5d, 0xca, 0x59, 0x3f, 0xe3, 0x4f, 0x72, 0x41, 0xbe, 0x05, 0x3b, 0xe7, 0x02,
-	0x19, 0x7b, 0x93, 0x67, 0x1a, 0xd9, 0x18, 0x9b, 0xc9, 0x53, 0xf2, 0x3d, 0x38, 0x0f, 0xd2, 0x79,
-	0xd8, 0x81, 0x37, 0x39, 0xd7, 0xb0, 0xb6, 0x77, 0x99, 0x42, 0x90, 0x2b, 0xe8, 0xe9, 0x3b, 0xd0,
-	0x45, 0xec, 0x85, 0xc6, 0x1a, 0x56, 0x64, 0x1a, 0x43, 0x26, 0xe0, 0x66, 0xda, 0x47, 0x81, 0x83,
-	0xf8, 0xaf, 0x2a, 0xb2, 0xa6, 0xe9, 0x58, 0x8d, 0x93, 0x8c, 0x97, 0x5c, 0x04, 0x3d, 0x83, 0xf1,
-	0x5d, 0x8b, 0xf1, 0x92, 0x0b, 0x09, 0x4a, 0x0b, 0x11, 0xf4, 0x0d, 0x50, 0x63, 0x28, 0x26, 0x4f,
-	0x25, 0xd7, 0x05, 0x4a, 0x1e, 0xb8, 0x06, 0x57, 0xc3, 0x2d, 0x4c, 0x63, 0xc8, 0x5b, 0xe8, 0xe6,
-	0xf3, 0x28, 0x0e, 0x06, 0x88, 0xad, 0x86, 0xda, 0xb2, 0x07, 0xc3, 0x73, 0xfa, 0xb7, 0x0d, 0x1e,
-	0x4e, 0xfb, 0xd0, 0xe7, 0xa6, 0xad, 0x58, 0xe7, 0xcb, 0x8a, 0x5d, 0x2a, 0xc5, 0x6c, 0x93, 0x46,
-	0x73, 0xa7, 0x94, 0x64, 0xef, 0x2a, 0xc9, 0x4c, 0x19, 0x8c, 0x07, 0xa4, 0xd2, 0xec, 0xba, 0xd6,
-	0x4c, 0x69, 0xf0, 0xfc, 0x5f, 0x9a, 0x69, 0x74, 0x25, 0xda, 0x6d, 0x4b, 0x34, 0xa5, 0xc2, 0x8b,
-	0x4f, 0x44, 0xd3, 0x21, 0x8d, 0x6a, 0x97, 0x4a, 0xb5, 0xbe, 0xc1, 0xfa, 0xae, 0xcd, 0x5a, 0xca,
-	0x76, 0xa9, 0x64, 0x73, 0x0d, 0x54, 0xeb, 0x3a, 0x2b, 0xdd, 0xae, 0x6b, 0xdd, 0x06, 0x06, 0x5f,
-	0xf3, 0xfe, 0xd6, 0xc2, 0x7d, 0xa7, 0x85, 0x03, 0xc3, 0xbc, 0xed, 0x5b, 0xa6, 0x94, 0x7b, 0xf7,
-	0x07, 0x5e, 0xf8, 0xd6, 0xd0, 0x89, 0x07, 0xfd, 0x5f, 0xe3, 0x32, 0xda, 0xac, 0x16, 0xfe, 0x11,
-	0x19, 0x80, 0x83, 0xe3, 0xf3, 0x2d, 0x02, 0xd0, 0x53, 0xc3, 0xf1, 0x3b, 0xe4, 0x18, 0xdc, 0xaa,
-	0x6f, 0xdf, 0x26, 0x7d, 0xb0, 0xef, 0xb8, 0xf0, 0xbb, 0x72, 0x71, 0x5f, 0x08, 0xdf, 0x91, 0x58,
-	0x45, 0xcc, 0xef, 0x11, 0x17, 0xba, 0xb2, 0xae, 0xdf, 0x9f, 0xfc, 0x0e, 0x0e, 0x8b, 0xfe, 0x9c,
-	0x96, 0x64, 0x84, 0x01, 0xe4, 0x54, 0xd2, 0x6a, 0x5c, 0xfc, 0xf5, 0x59, 0xfd, 0xad, 0x5f, 0xa3,
-	0x23, 0x89, 0xbc, 0x2f, 0x34, 0xb2, 0xb1, 0xb2, 0x42, 0xb6, 0x9f, 0xbc, 0xa3, 0xc9, 0x0c, 0x9c,
-	0x70, 0x1b, 0x4f, 0x4b, 0x72, 0x05, 0x76, 0xb8, 0x8d, 0x55, 0x48, 0xd3, 0x9a, 0x0a, 0x69, 0x79,
-	0x94, 0x1e, 0x8d, 0xac, 0x1b, 0x4b, 0x16, 0x60, 0xc5, 0x21, 0xe8, 0xf7, 0x67, 0x70, 0x92, 0x64,
-	0xcb, 0xb1, 0x58, 0xad, 0xcb, 0xb1, 0xfc, 0x97, 0x7a, 0xe8, 0xe1, 0xcf, 0xd4, 0xed, 0x3f, 0x01,
-	0x00, 0x00, 0xff, 0xff, 0x84, 0x52, 0xfe, 0xcd, 0x5a, 0x09, 0x00, 0x00,
+	// 1071 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x57, 0xdd, 0x72, 0xda, 0x46,
+	0x14, 0xb6, 0x2c, 0x04, 0xe2, 0xc8, 0x3f, 0xca, 0xda, 0xb1, 0x15, 0x32, 0xd3, 0x90, 0xad, 0x9b,
+	0xd2, 0xd4, 0x66, 0x1c, 0xe8, 0x34, 0xb7, 0x1d, 0x37, 0x1d, 0xb7, 0xe3, 0x1b, 0x77, 0x43, 0x67,
+	0x7a, 0xc7, 0xc8, 0xb0, 0x43, 0x29, 0x58, 0x60, 0x49, 0xa8, 0xf8, 0x21, 0xfa, 0x3c, 0x7d, 0xb0,
+	0xbe, 0x40, 0x67, 0xcf, 0xae, 0xa4, 0xdd, 0x60, 0x12, 0x9a, 0xc9, 0xe4, 0x4e, 0x7b, 0xf6, 0x3b,
+	0xbf, 0xdf, 0x39, 0x87, 0x05, 0x60, 0x92, 0xcd, 0x6f, 0xda, 0xf3, 0x78, 0x96, 0xce, 0xc8, 0xf6,
+	0x24, 0xa3, 0x4f, 0xc0, 0xf9, 0x29, 0x8e, 0x67, 0x31, 0xf1, 0xc1, 0xbe, 0x4d, 0x46, 0x81, 0xd5,
+	0xb4, 0x5a, 0x75, 0x26, 0x3e, 0xe9, 0x39, 0x54, 0xaf, 0xb2, 0xeb, 0x70, 0x8c, 0x77, 0x13, 0x7e,
+	0x8f, 0x77, 0x3b, 0x4c, 0x7c, 0x92, 0x43, 0x70, 0xb2, 0x70, 0xba, 0xe0, 0xc1, 0x36, 0xca, 0xe4,
+	0x81, 0x7e, 0x01, 0x70, 0xc9, 0x53, 0xc6, 0xef, 0x16, 0x3c, 0x49, 0x57, 0xb5, 0xe8, 0x1b, 0xf0,
+	0xf0, 0x3e, 0x99, 0xcf, 0xa2, 0x84, 0x93, 0x67, 0xe0, 0x70, 0xe1, 0x1b, 0x21, 0x5e, 0xa7, 0xde,
+	0x9e, 0x64, 0x6d, 0x0c, 0x86, 0x49, 0xf9, 0x1a, 0x2f, 0xdf, 0x01, 0x5c, 0x2f, 0xd6, 0x7b, 0x59,
+	0xa3, 0xd5, 0x06, 0x0f, 0xb5, 0x36, 0xf4, 0x4d, 0xbb, 0xb0, 0x7f, 0x11, 0xa6, 0x83, 0x3f, 0x34,
+	0x57, 0x4d, 0x70, 0xe6, 0xe1, 0x38, 0x4e, 0x02, 0xab, 0x69, 0xb7, 0xbc, 0x0e, 0x08, 0x1d, 0x59,
+	0x21, 0x26, 0x2f, 0x68, 0x17, 0xfc, 0x52, 0x69, 0x53, 0x4f, 0xcf, 0x61, 0xf7, 0x0d, 0x9f, 0xf2,
+	0x94, 0xaf, 0x2f, 0xdc, 0x2b, 0xd8, 0xcb, 0x21, 0x9b, 0x5a, 0x6d, 0x01, 0xc1, 0x50, 0x4c, 0xd3,
+	0x04, 0x2a, 0x13, 0x7e, 0x2f, 0x33, 0xd8, 0x61, 0xf8, 0x4d, 0xbf, 0x87, 0x03, 0x03, 0xb9, 0xa9,
+	0x87, 0xaf, 0x54, 0x85, 0x34, 0xca, 0x1f, 0x32, 0xff, 0x9b, 0xaa, 0xc9, 0xff, 0x62, 0xbe, 0x28,
+	0xf5, 0xf6, 0xba, 0x52, 0xff, 0x0c, 0x44, 0x05, 0x1c, 0x46, 0xa3, 0x22, 0xbf, 0x06, 0xb8, 0x49,
+	0x1a, 0xc6, 0xe9, 0x55, 0x51, 0xbf, 0xe2, 0x4c, 0x8e, 0xa0, 0xca, 0xa3, 0xa1, 0xb8, 0x91, 0x8d,
+	0xa1, 0x4e, 0x22, 0x7f, 0xc3, 0xd2, 0xa6, 0xf9, 0xdf, 0x82, 0xf7, 0x76, 0x10, 0x46, 0xb9, 0xeb,
+	0xa7, 0x50, 0x47, 0x57, 0xfd, 0xc9, 0x03, 0xbe, 0x8f, 0xa1, 0xc6, 0xa3, 0x21, 0x5e, 0x19, 0xce,
+	0x45, 0xb3, 0x4e, 0xc7, 0xb7, 0xe3, 0x34, 0xb0, 0x9b, 0x56, 0x6b, 0x97, 0xc9, 0x83, 0xa8, 0xe3,
+	0x90, 0x27, 0x83, 0xa0, 0xd2, 0xb4, 0x5a, 0x2e, 0xc3, 0x6f, 0xfa, 0x2b, 0xec, 0x48, 0x77, 0x9f,
+	0xae, 0x86, 0x29, 0x10, 0xc6, 0x33, 0x1e, 0x27, 0xfc, 0x73, 0x26, 0xf2, 0x3b, 0x1c, 0x18, 0x5e,
+	0x3f, 0x5d, 0x3e, 0xe7, 0xb0, 0xdb, 0x5b, 0x46, 0x6f, 0xcb, 0x7e, 0x7c, 0x06, 0x5e, 0xb8, 0x48,
+	0x67, 0xfd, 0xc1, 0xec, 0x56, 0x84, 0x66, 0x61, 0x14, 0x20, 0x44, 0x3f, 0xa2, 0x84, 0xfa, 0xb0,
+	0x97, 0x6b, 0xc8, 0x30, 0xe8, 0x29, 0xec, 0xf7, 0x96, 0xd1, 0x05, 0x1f, 0x8d, 0x8b, 0x82, 0x3c,
+	0x51, 0x4d, 0xd5, 0x4f, 0x13, 0x34, 0x51, 0x61, 0x35, 0x3c, 0xf7, 0x12, 0x7a, 0x06, 0x7e, 0x89,
+	0x56, 0x89, 0xbc, 0x07, 0x4e, 0x10, 0x2e, 0x7d, 0x2b, 0xeb, 0xf4, 0x1c, 0x1e, 0x69, 0x32, 0x65,
+	0xe3, 0x29, 0xd4, 0x65, 0xcc, 0xa5, 0x11, 0x57, 0x0a, 0x7a, 0x09, 0x3d, 0x04, 0xd2, 0x5b, 0x46,
+	0x6c, 0x36, 0x9d, 0xde, 0x84, 0x83, 0x49, 0x6e, 0xe7, 0x31, 0x1c, 0x18, 0x52, 0x95, 0xcf, 0x73,
+	0xac, 0xc9, 0x7b, 0xd7, 0xf2, 0x0b, 0x2c, 0x82, 0x3e, 0x9f, 0xc5, 0x0a, 0xb5, 0xf4, 0x15, 0xfa,
+	0x1a, 0x4d, 0x7d, 0xc4, 0xee, 0x95, 0x55, 0xd6, 0x96, 0x22, 0x3d, 0xc1, 0x42, 0x7c, 0x68, 0xed,
+	0x1d, 0x60, 0x69, 0xcc, 0xbd, 0x44, 0xe7, 0x92, 0xb2, 0xcf, 0xd8, 0xb0, 0x5d, 0x6c, 0x09, 0xa3,
+	0x59, 0xb1, 0x17, 0xe3, 0xf1, 0x9a, 0x9f, 0x82, 0x78, 0x9c, 0xd0, 0xbf, 0x6d, 0x00, 0xc1, 0x87,
+	0x8a, 0xf1, 0x0c, 0xdc, 0x98, 0xdf, 0xf5, 0xd3, 0xfb, 0xb9, 0x2c, 0xea, 0x5e, 0x87, 0x08, 0x9d,
+	0x12, 0xd1, 0xbb, 0x9f, 0x73, 0x56, 0x8b, 0xf9, 0x9d, 0xf8, 0x20, 0x5f, 0x82, 0x9d, 0xf0, 0x14,
+	0x23, 0xf6, 0x3a, 0x8f, 0x14, 0xb2, 0x6c, 0x6c, 0x26, 0x6e, 0xc9, 0x37, 0xe0, 0xdc, 0x88, 0xce,
+	0xc3, 0x0c, 0xbc, 0xce, 0x81, 0x82, 0xe9, 0xbd, 0xcb, 0x24, 0x82, 0x9c, 0x42, 0x55, 0xcd, 0x40,
+	0x05, 0xb1, 0x87, 0x0a, 0x6b, 0xb4, 0x22, 0x53, 0x18, 0xd2, 0x01, 0x37, 0x56, 0x7d, 0x14, 0x38,
+	0x88, 0x3f, 0xca, 0x83, 0x35, 0x9b, 0x8e, 0x15, 0x38, 0x11, 0xf1, 0x88, 0xa7, 0x41, 0xd5, 0x88,
+	0xf8, 0x52, 0x8b, 0x78, 0xc4, 0x53, 0x01, 0x9a, 0x2f, 0xd2, 0xa0, 0x66, 0x80, 0xca, 0x86, 0x62,
+	0xe2, 0x56, 0xc4, 0x3a, 0x44, 0xca, 0x03, 0xd7, 0x88, 0xd5, 0xe8, 0x16, 0xa6, 0x30, 0xe4, 0x05,
+	0x54, 0x92, 0x41, 0x18, 0x05, 0x75, 0xc4, 0xe6, 0x45, 0xd5, 0xda, 0x83, 0xe1, 0x3d, 0xfd, 0xc7,
+	0x06, 0x0f, 0xab, 0xbd, 0xe9, 0xba, 0xd1, 0x19, 0xdb, 0xfe, 0x30, 0x63, 0x27, 0x92, 0x31, 0xdb,
+	0x0c, 0xa3, 0x9c, 0x29, 0x49, 0xd9, 0xcb, 0x9c, 0x32, 0x93, 0x06, 0x63, 0x81, 0xe4, 0x9c, 0x9d,
+	0x15, 0x9c, 0x49, 0x0e, 0x1e, 0xbf, 0xc3, 0x99, 0x42, 0xe7, 0xa4, 0x75, 0x35, 0xd2, 0x24, 0x0b,
+	0xc7, 0x2b, 0xa4, 0x29, 0x95, 0x92, 0xb5, 0x13, 0xc9, 0x5a, 0xcd, 0x88, 0xfa, 0x52, 0x8f, 0x5a,
+	0xd0, 0x76, 0x22, 0x69, 0x73, 0x0d, 0x94, 0x36, 0xce, 0x92, 0xb7, 0xb3, 0x82, 0xb7, 0xba, 0x11,
+	0xaf, 0x39, 0xbf, 0x05, 0x71, 0x5f, 0x2b, 0xe2, 0xc0, 0x68, 0x5e, 0x7d, 0xca, 0x24, 0x73, 0x2f,
+	0xff, 0xc4, 0x81, 0xd7, 0x8a, 0x4e, 0x3c, 0xa8, 0xfd, 0x12, 0x65, 0xe1, 0x74, 0x3c, 0xf4, 0xb7,
+	0x48, 0x1d, 0x1c, 0x2c, 0x9f, 0x6f, 0x11, 0x80, 0xaa, 0x2c, 0x8e, 0xbf, 0x4d, 0x76, 0xc0, 0xcd,
+	0xf3, 0xf6, 0x6d, 0x52, 0x03, 0xfb, 0x92, 0xa7, 0x7e, 0x45, 0x7c, 0x5c, 0x2f, 0x52, 0xdf, 0x11,
+	0x58, 0x19, 0x98, 0x5f, 0x25, 0x2e, 0x54, 0x84, 0x5f, 0xbf, 0xd6, 0xf9, 0xd7, 0x06, 0x87, 0x85,
+	0x7f, 0x5d, 0x65, 0xa4, 0x85, 0x1a, 0x64, 0x4f, 0xc4, 0x55, 0xb6, 0x71, 0x63, 0xbf, 0x38, 0xab,
+	0x75, 0xb4, 0x45, 0x5e, 0x83, 0x9b, 0x3f, 0x70, 0x08, 0xa6, 0xf1, 0xce, 0xab, 0xa8, 0x71, 0x68,
+	0x0a, 0x0b, 0xc5, 0x16, 0xc6, 0x22, 0x5d, 0x94, 0x43, 0x20, 0x5d, 0xe8, 0xcb, 0xb2, 0x74, 0x21,
+	0xe0, 0xa5, 0x0b, 0x4d, 0xe7, 0xd0, 0x14, 0x16, 0x8a, 0xaf, 0xf2, 0x2c, 0x09, 0x4e, 0x9b, 0x31,
+	0x42, 0x0d, 0xa2, 0x8b, 0x0a, 0x95, 0x1f, 0xc0, 0xd3, 0x9e, 0x83, 0xe4, 0xa8, 0xb0, 0x6c, 0x2a,
+	0x1f, 0xaf, 0xc8, 0x75, 0x0b, 0xda, 0x83, 0x4a, 0x5a, 0x58, 0x7d, 0xab, 0x49, 0x0b, 0x0f, 0xbc,
+	0xbc, 0xe8, 0x16, 0xf9, 0x56, 0x12, 0x42, 0xb0, 0x14, 0xda, 0x2c, 0x37, 0xfc, 0x52, 0xa0, 0xbb,
+	0xd3, 0xde, 0x13, 0xd2, 0xdd, 0xea, 0xb3, 0x46, 0xba, 0x7b, 0xe0, 0xe1, 0x41, 0xb7, 0x3a, 0x7d,
+	0x70, 0x7a, 0xcb, 0xe8, 0x2a, 0x23, 0xa7, 0x60, 0xf7, 0x96, 0x91, 0x64, 0xa4, 0xec, 0x39, 0xc9,
+	0x88, 0xb6, 0x3c, 0xe8, 0x56, 0xcb, 0x3a, 0xb7, 0x04, 0x7f, 0x6c, 0xb1, 0x09, 0xfa, 0x62, 0x1f,
+	0x76, 0x67, 0xf1, 0xa8, 0x9d, 0x8e, 0x27, 0x59, 0x5b, 0xfc, 0x01, 0xbb, 0xa9, 0xe2, 0x3f, 0xb0,
+	0xee, 0x7f, 0x01, 0x00, 0x00, 0xff, 0xff, 0x16, 0x34, 0x6f, 0xcb, 0x8f, 0x0d, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -1443,8 +1906,14 @@ const _ = grpc.SupportPackageIsVersion4
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type RawKvClient interface {
 	Get(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetResponse, error)
-	// rpc BatchGet(BatchGetRequest) returns (BatchGetResponse) {}
+	BatchGet(ctx context.Context, in *BatchGetRequest, opts ...grpc.CallOption) (*BatchGetResponse, error)
 	Put(ctx context.Context, in *PutRequest, opts ...grpc.CallOption) (*PutResponse, error)
+	BatchPut(ctx context.Context, in *BatchPutRequest, opts ...grpc.CallOption) (*BatchPutResponse, error)
+	Delete(ctx context.Context, in *DeleteRequest, opts ...grpc.CallOption) (*DeleteResponse, error)
+	BatchDelete(ctx context.Context, in *BatchDeleteRequest, opts ...grpc.CallOption) (*BatchDeleteResponse, error)
+	DeleteRange(ctx context.Context, in *DeleteRangeRequest, opts ...grpc.CallOption) (*DeleteRangeResponse, error)
+	Scan(ctx context.Context, in *ScanRequest, opts ...grpc.CallOption) (*ScanResponse, error)
+	ReverseScan(ctx context.Context, in *ReverseScanRequest, opts ...grpc.CallOption) (*ReverseScanResponse, error)
 }
 
 type rawKvClient struct {
@@ -1464,6 +1933,15 @@ func (c *rawKvClient) Get(ctx context.Context, in *GetRequest, opts ...grpc.Call
 	return out, nil
 }
 
+func (c *rawKvClient) BatchGet(ctx context.Context, in *BatchGetRequest, opts ...grpc.CallOption) (*BatchGetResponse, error) {
+	out := new(BatchGetResponse)
+	err := c.cc.Invoke(ctx, "/kv.RawKv/BatchGet", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *rawKvClient) Put(ctx context.Context, in *PutRequest, opts ...grpc.CallOption) (*PutResponse, error) {
 	out := new(PutResponse)
 	err := c.cc.Invoke(ctx, "/kv.RawKv/Put", in, out, opts...)
@@ -1473,11 +1951,71 @@ func (c *rawKvClient) Put(ctx context.Context, in *PutRequest, opts ...grpc.Call
 	return out, nil
 }
 
+func (c *rawKvClient) BatchPut(ctx context.Context, in *BatchPutRequest, opts ...grpc.CallOption) (*BatchPutResponse, error) {
+	out := new(BatchPutResponse)
+	err := c.cc.Invoke(ctx, "/kv.RawKv/BatchPut", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *rawKvClient) Delete(ctx context.Context, in *DeleteRequest, opts ...grpc.CallOption) (*DeleteResponse, error) {
+	out := new(DeleteResponse)
+	err := c.cc.Invoke(ctx, "/kv.RawKv/Delete", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *rawKvClient) BatchDelete(ctx context.Context, in *BatchDeleteRequest, opts ...grpc.CallOption) (*BatchDeleteResponse, error) {
+	out := new(BatchDeleteResponse)
+	err := c.cc.Invoke(ctx, "/kv.RawKv/BatchDelete", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *rawKvClient) DeleteRange(ctx context.Context, in *DeleteRangeRequest, opts ...grpc.CallOption) (*DeleteRangeResponse, error) {
+	out := new(DeleteRangeResponse)
+	err := c.cc.Invoke(ctx, "/kv.RawKv/DeleteRange", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *rawKvClient) Scan(ctx context.Context, in *ScanRequest, opts ...grpc.CallOption) (*ScanResponse, error) {
+	out := new(ScanResponse)
+	err := c.cc.Invoke(ctx, "/kv.RawKv/Scan", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *rawKvClient) ReverseScan(ctx context.Context, in *ReverseScanRequest, opts ...grpc.CallOption) (*ReverseScanResponse, error) {
+	out := new(ReverseScanResponse)
+	err := c.cc.Invoke(ctx, "/kv.RawKv/ReverseScan", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // RawKvServer is the server API for RawKv service.
 type RawKvServer interface {
 	Get(context.Context, *GetRequest) (*GetResponse, error)
-	// rpc BatchGet(BatchGetRequest) returns (BatchGetResponse) {}
+	BatchGet(context.Context, *BatchGetRequest) (*BatchGetResponse, error)
 	Put(context.Context, *PutRequest) (*PutResponse, error)
+	BatchPut(context.Context, *BatchPutRequest) (*BatchPutResponse, error)
+	Delete(context.Context, *DeleteRequest) (*DeleteResponse, error)
+	BatchDelete(context.Context, *BatchDeleteRequest) (*BatchDeleteResponse, error)
+	DeleteRange(context.Context, *DeleteRangeRequest) (*DeleteRangeResponse, error)
+	Scan(context.Context, *ScanRequest) (*ScanResponse, error)
+	ReverseScan(context.Context, *ReverseScanRequest) (*ReverseScanResponse, error)
 }
 
 // UnimplementedRawKvServer can be embedded to have forward compatible implementations.
@@ -1487,8 +2025,29 @@ type UnimplementedRawKvServer struct {
 func (*UnimplementedRawKvServer) Get(ctx context.Context, req *GetRequest) (*GetResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Get not implemented")
 }
+func (*UnimplementedRawKvServer) BatchGet(ctx context.Context, req *BatchGetRequest) (*BatchGetResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method BatchGet not implemented")
+}
 func (*UnimplementedRawKvServer) Put(ctx context.Context, req *PutRequest) (*PutResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Put not implemented")
+}
+func (*UnimplementedRawKvServer) BatchPut(ctx context.Context, req *BatchPutRequest) (*BatchPutResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method BatchPut not implemented")
+}
+func (*UnimplementedRawKvServer) Delete(ctx context.Context, req *DeleteRequest) (*DeleteResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Delete not implemented")
+}
+func (*UnimplementedRawKvServer) BatchDelete(ctx context.Context, req *BatchDeleteRequest) (*BatchDeleteResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method BatchDelete not implemented")
+}
+func (*UnimplementedRawKvServer) DeleteRange(ctx context.Context, req *DeleteRangeRequest) (*DeleteRangeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteRange not implemented")
+}
+func (*UnimplementedRawKvServer) Scan(ctx context.Context, req *ScanRequest) (*ScanResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Scan not implemented")
+}
+func (*UnimplementedRawKvServer) ReverseScan(ctx context.Context, req *ReverseScanRequest) (*ReverseScanResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ReverseScan not implemented")
 }
 
 func RegisterRawKvServer(s *grpc.Server, srv RawKvServer) {
@@ -1513,6 +2072,24 @@ func _RawKv_Get_Handler(srv interface{}, ctx context.Context, dec func(interface
 	return interceptor(ctx, in, info, handler)
 }
 
+func _RawKv_BatchGet_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(BatchGetRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RawKvServer).BatchGet(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kv.RawKv/BatchGet",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RawKvServer).BatchGet(ctx, req.(*BatchGetRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _RawKv_Put_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(PutRequest)
 	if err := dec(in); err != nil {
@@ -1531,6 +2108,114 @@ func _RawKv_Put_Handler(srv interface{}, ctx context.Context, dec func(interface
 	return interceptor(ctx, in, info, handler)
 }
 
+func _RawKv_BatchPut_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(BatchPutRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RawKvServer).BatchPut(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kv.RawKv/BatchPut",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RawKvServer).BatchPut(ctx, req.(*BatchPutRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _RawKv_Delete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RawKvServer).Delete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kv.RawKv/Delete",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RawKvServer).Delete(ctx, req.(*DeleteRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _RawKv_BatchDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(BatchDeleteRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RawKvServer).BatchDelete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kv.RawKv/BatchDelete",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RawKvServer).BatchDelete(ctx, req.(*BatchDeleteRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _RawKv_DeleteRange_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteRangeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RawKvServer).DeleteRange(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kv.RawKv/DeleteRange",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RawKvServer).DeleteRange(ctx, req.(*DeleteRangeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _RawKv_Scan_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ScanRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RawKvServer).Scan(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kv.RawKv/Scan",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RawKvServer).Scan(ctx, req.(*ScanRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _RawKv_ReverseScan_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReverseScanRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RawKvServer).ReverseScan(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kv.RawKv/ReverseScan",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RawKvServer).ReverseScan(ctx, req.(*ReverseScanRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _RawKv_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "kv.RawKv",
 	HandlerType: (*RawKvServer)(nil),
@@ -1540,8 +2225,36 @@ var _RawKv_serviceDesc = grpc.ServiceDesc{
 			Handler:    _RawKv_Get_Handler,
 		},
 		{
+			MethodName: "BatchGet",
+			Handler:    _RawKv_BatchGet_Handler,
+		},
+		{
 			MethodName: "Put",
 			Handler:    _RawKv_Put_Handler,
+		},
+		{
+			MethodName: "BatchPut",
+			Handler:    _RawKv_BatchPut_Handler,
+		},
+		{
+			MethodName: "Delete",
+			Handler:    _RawKv_Delete_Handler,
+		},
+		{
+			MethodName: "BatchDelete",
+			Handler:    _RawKv_BatchDelete_Handler,
+		},
+		{
+			MethodName: "DeleteRange",
+			Handler:    _RawKv_DeleteRange_Handler,
+		},
+		{
+			MethodName: "Scan",
+			Handler:    _RawKv_Scan_Handler,
+		},
+		{
+			MethodName: "ReverseScan",
+			Handler:    _RawKv_ReverseScan_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

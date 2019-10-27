@@ -4,9 +4,8 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"strconv"
 
-	"github.com/pingcap/kvproto/pkg/pdpb"
-	pd "github.com/pingcap/pd/client"
 	"github.com/pingcap/pd/pkg/grpcutil"
 	tikv "github.com/pingcap/pd/tikv"
 )
@@ -24,40 +23,6 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	members, err := pdpb.NewPDClient(conn).GetMembers(ctx, &pdpb.GetMembersRequest{})
-	if err != nil {
-		panic(err)
-	}
-	for _, member := range members.Members {
-		fmt.Println("members:", member)
-	}
-
-	client, err := pd.NewClient([]string{addr}, pd.SecurityOption{})
-	if err != nil {
-		panic(err)
-	}
-	resp, err := client.GetMembers(ctx, addr)
-	if err != nil {
-		panic(err)
-	}
-	for _, member := range resp.Members {
-		fmt.Println("PD members:", member)
-	}
-
-	// pt, lt, err := client.GetTS(ctx)
-	// if err != nil {
-	// 	panic(err)
-	// }
-	// fmt.Printf("PT: %d, LT: %d\n", pt, lt)
-
-	// storeResp, err := client.GetAllStores(ctx)
-	// if err != nil {
-	// 	panic(err)
-	// }
-	// for _, store := range storeResp {
-	// 	fmt.Println("Store:", store)
-	// }
-
 	rawkvClient := tikv.NewRawKvClient(conn)
 	getReq := &tikv.GetRequest{Key: []byte("Company")}
 	getResp, err := rawkvClient.Get(ctx, getReq)
@@ -85,4 +50,38 @@ func main() {
 		panic(err)
 	}
 	fmt.Printf("Company: %s\n", getResp.GetValue())
+
+	getReq = &tikv.GetRequest{Key: []byte("MaxNumber")}
+	getResp, err = rawkvClient.Get(ctx, getReq)
+	if err != nil {
+		panic(err)
+	}
+	value = getResp.GetValue()
+	fmt.Println("MaxNumber=", value)
+	if len(value) == 0 {
+		putReq = &tikv.PutRequest{Key: []byte("MaxNumber"), Value: []byte("1")}
+		_, _ = rawkvClient.Put(ctx, putReq)
+		putReq = &tikv.PutRequest{Key: []byte("1"), Value: []byte("1")}
+		_, _ = rawkvClient.Put(ctx, putReq)
+		value = []byte("1")
+	} else {
+		n, err := strconv.Atoi(string(value))
+		if err != nil {
+			panic(err)
+		}
+		putReq = &tikv.PutRequest{Key: []byte("MaxNumber"), Value: []byte(strconv.Itoa(n + 1))}
+		_, _ = rawkvClient.Put(ctx, putReq)
+		putReq = &tikv.PutRequest{Key: []byte(strconv.Itoa(n + 1)), Value: []byte("1")}
+		_, _ = rawkvClient.Put(ctx, putReq)
+		value = []byte(strconv.Itoa(n + 1))
+	}
+	scanReq := &tikv.ScanRequest{StartKey: []byte("1"), EndKey: value, Limit: 10, Desc: true}
+	scanResp, err := rawkvClient.Scan(ctx, scanReq)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("Scaned")
+	for _, pair := range scanResp.Pairs {
+		fmt.Println(string(pair.Key), string(pair.Value))
+	}
 }

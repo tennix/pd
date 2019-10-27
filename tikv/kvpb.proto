@@ -9,7 +9,7 @@ option java_package = "org.tikv.kvpb";
 // protoc -I tikv/ tikv/kvpb.proto --go_out=plugins=grpc:tikv
 
 message Error {
-  string msg = 1;
+    string msg = 1;
 }
 
 message KvPair {
@@ -18,21 +18,29 @@ message KvPair {
 }
 
 message GetRequest {
-  bytes key = 1;
+    bytes key = 1;
 }
 
 message GetResponse {
-  Error error = 1;
-  bytes value = 2;
+    Error error = 1;
+    bytes value = 2;
 }
 
 message PutRequest {
-  bytes key = 1;
-  bytes value = 2;
+    bytes key = 1;
+    bytes value = 2;
 }
 
 message PutResponse {
-  Error error = 1;
+    Error error = 1;
+}
+
+message BatchPutRequest {
+    repeated KvPair pairs = 1;
+}
+
+message BatchPutResponse {
+    Error error = 1;
 }
 
 message DeleteRequest {
@@ -42,6 +50,32 @@ message DeleteRequest {
 message DeleteResponse {
     Error error = 1;
     // Need to return whether deleted or not?
+}
+
+message BatchDeleteRequest {
+    repeated bytes keys = 1;
+}
+
+message BatchDeleteResponse {
+    Error error = 1;
+}
+
+message BatchGetRequest {
+    repeated bytes keys = 1;
+}
+
+message BatchGetResponse {
+    Error error = 1;
+    repeated KvPair pairs = 2;
+}
+
+message DeleteRangeRequest {
+    bytes startKey = 1;
+    bytes endKey = 2;
+}
+
+message DeleteRangeResponse {
+    Error error = 1;
 }
 
 message ScanRequest {
@@ -56,16 +90,37 @@ message ScanResponse {
     repeated KvPair pairs = 2;
 }
 
+message ReverseScanRequest {
+    bytes start_key = 1;
+    bytes end_key = 2;
+    uint32 limit = 3;
+    bool desc = 4;
+}
+
+message ReverseScanResponse {
+    Error error = 1;
+    repeated KvPair pairs = 2;
+}
+
 service RawKv {
-  rpc Get(GetRequest) returns (GetResponse) {}
-  // rpc BatchGet(BatchGetRequest) returns (BatchGetResponse) {}
-  rpc Put(PutRequest) returns (PutResponse) {}
-  // rpc BatchPut(BatchPutRequest) returns (BatchPutResponse) {}
-  // rpc Delete(DeleteRequest) returns (DeleteResponse) {}
-  // rpc BatchDelete(BatchDeleteRequest) returns (BatchDeleteResponse) {}
-  // rpc DeleteRange(DeleteRangeRequest) returns (DeleteRangeResponse) {}
-  // rpc Scan(ScanRequest) returns (ScanResponse) {}
-  // rpc ReverseScan(ReverseScanRequest) returns (ReverseScanResponse) {}
+    rpc Get (GetRequest) returns (GetResponse) {
+    }
+    rpc BatchGet (BatchGetRequest) returns (BatchGetResponse) {
+    }
+    rpc Put (PutRequest) returns (PutResponse) {
+    }
+    rpc BatchPut (BatchPutRequest) returns (BatchPutResponse) {
+    }
+    rpc Delete (DeleteRequest) returns (DeleteResponse) {
+    }
+    rpc BatchDelete (BatchDeleteRequest) returns (BatchDeleteResponse) {
+    }
+    rpc DeleteRange (DeleteRangeRequest) returns (DeleteRangeResponse) {
+    }
+    rpc Scan (ScanRequest) returns (ScanResponse) {
+    }
+    rpc ReverseScan (ReverseScanRequest) returns (ReverseScanResponse) {
+    }
 }
 
 // Txn

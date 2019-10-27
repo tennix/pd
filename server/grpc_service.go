@@ -820,6 +820,18 @@ func (s *Server) Get(ctx context.Context, req *tikv.GetRequest) (*tikv.GetRespon
 	return &tikv.GetResponse{Value: value}, nil
 }
 
+func (s *Server) BatchGet(ctx context.Context, req *tikv.BatchGetRequest) (*tikv.BatchGetResponse, error) {
+	result, err := s.rawkvClient.BatchGet(ctx, req.Keys)
+	if err != nil {
+		return &tikv.BatchGetResponse{Error: &tikv.Error{Msg: err.Error()}}, nil
+	}
+	var response tikv.BatchGetResponse
+	for index := range req.Keys {
+		response.Pairs = append(response.Pairs, &tikv.KvPair{Key: req.Keys[index], Value: result[index]})
+	}
+	return &response, nil
+}
+
 func (s *Server) Put(ctx context.Context, req *tikv.PutRequest) (*tikv.PutResponse, error) {
 	err := s.rawkvClient.Put(ctx, req.GetKey(), req.GetValue())
 	if err != nil {
@@ -930,4 +942,65 @@ func (s *Server) Transaction(stream tikv.TxnKv_TransactionServer) error {
 
 func (s *Server) RunOnce(ctx context.Context, req *tikv.TxnRequest) (*tikv.TxnResponse, error) {
 	return nil, nil
+}
+
+func (s *Server) BatchPut(ctx context.Context, req *tikv.BatchPutRequest) (*tikv.BatchPutResponse, error) {
+	var keys [][]byte
+	var values [][]byte
+	for _, pair := range req.Pairs {
+		keys = append(keys, pair.Key)
+		values = append(values, pair.Value)
+	}
+	err := s.rawkvClient.BatchPut(ctx, keys, values)
+	if err != nil {
+		return &tikv.BatchPutResponse{Error: &tikv.Error{Msg: err.Error()}}, nil
+	}
+	return &tikv.BatchPutResponse{}, nil
+}
+
+func (s *Server) Delete(ctx context.Context, req *tikv.DeleteRequest) (*tikv.DeleteResponse, error) {
+	err := s.rawkvClient.Delete(ctx, req.GetKey())
+	if err != nil {
+		return &tikv.DeleteResponse{Error: &tikv.Error{Msg: err.Error()}}, nil
+	}
+	return &tikv.DeleteResponse{Error: nil}, nil
+}
+func (s *Server) BatchDelete(ctx context.Context, req *tikv.BatchDeleteRequest) (*tikv.BatchDeleteResponse, error) {
+	err := s.rawkvClient.BatchDelete(ctx, req.Keys)
+	if err != nil {
+		return &tikv.BatchDeleteResponse{Error: &tikv.Error{Msg: err.Error()}}, nil
+	}
+	return &tikv.BatchDeleteResponse{Error: nil}, nil
+}
+
+func (s *Server) DeleteRange(ctx context.Context, req *tikv.DeleteRangeRequest) (*tikv.DeleteRangeResponse, error) {
+	err := s.rawkvClient.DeleteRange(ctx, req.StartKey, req.EndKey)
+	if err != nil {
+		return &tikv.DeleteRangeResponse{Error: &tikv.Error{Msg: err.Error()}}, nil
+	}
+	return &tikv.DeleteRangeResponse{}, nil
+}
+
+func (s *Server) Scan(ctx context.Context, req *tikv.ScanRequest) (*tikv.ScanResponse, error) {
+	keys, values, err := s.rawkvClient.Scan(ctx, req.StartKey, req.EndKey, int(req.Limit))
+	if err != nil {
+		return &tikv.ScanResponse{Error: &tikv.Error{Msg: err.Error()}}, nil
+	}
+	var response tikv.ScanResponse
+	for index := range keys {
+		response.Pairs = append(response.Pairs, &tikv.KvPair{Key: keys[index], Value: values[index]})
+	}
+	return &response, nil
+}
+
+func (s *Server) ReverseScan(ctx context.Context, req *tikv.ReverseScanRequest) (*tikv.ReverseScanResponse, error) {
+	keys, values, err := s.rawkvClient.ReverseScan(ctx, req.StartKey, req.EndKey, int(req.Limit))
+	if err != nil {
+		return &tikv.ReverseScanResponse{Error: &tikv.Error{Msg: err.Error()}}, nil
+	}
+	var response tikv.ReverseScanResponse
+	for index := range keys {
+		response.Pairs = append(response.Pairs, &tikv.KvPair{Key: keys[index], Value: values[index]})
+	}
+	return &response, nil
 }

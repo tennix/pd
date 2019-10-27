@@ -19,6 +19,7 @@ import (
 	"math/rand"
 	"net"
 	"net/http"
+	"os"
 	"path"
 	"path/filepath"
 	"strconv"
@@ -412,18 +413,20 @@ func (s *Server) Run(ctx context.Context) error {
 	// run gossip memberlist
 	memberlistConfig := memberlist.DefaultLocalConfig()
 	memberlistConfig.Name = s.cfg.Name
-	memberlistConfig.AdvertiseAddr = s.etcdCfg.ACUrls[0].Hostname()
+	memberlistConfig.AdvertiseAddr = os.Getenv("MY_POD_IP")
 	list, err := memberlist.Create(memberlistConfig)
 	if err != nil {
 		log.Info("failed to create member", zap.Error(err))
 		return err
 	}
 	log.Info("Gossip member", zap.Reflect("gossip_members", list.Members()))
-	if len(s.joins) != 0 {
-		if _, err := list.Join(s.joins); err != nil {
+	members := os.Getenv("MEMBERS")
+	if members != "" {
+		if _, err := list.Join(strings.Split(strings.TrimSpace(members), "\n")); err != nil {
 			return err
 		}
 	}
+
 	s.memberList = list
 
 	return nil

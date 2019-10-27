@@ -7,7 +7,7 @@ spec:
     matchLabels:
       app: tikv
   serviceName: kv-headless
-  replicas: 5
+  replicas: 3
   template:
     metadata:
       labels:
@@ -26,18 +26,19 @@ spec:
           sleep 20
           ordinal=$(echo ${MY_POD_NAME} | awk -F'-' '{print $NF}')
           if [ $ordinal == "0" ]; then
-            # dns=${MY_POD_NAME}.kv-headless.${MY_NAMESPACE}
-            # until nslookup $dns 2>/dev/null; do
-            #   echo "Wait DNS $dns to be resolvable"
-            #   sleep 2
-            # done
+            dns=${MY_POD_NAME}.kv-headless.${MY_NAMESPACE}
+            until nslookup $dns 2>/dev/null; do
+              echo "Wait DNS $dns to be resolvable"
+              sleep 2
+            done
             extraArgs="--initial-cluster=${MY_POD_NAME}=http://$(MY_POD_NAME).kv-headless.${MY_NAMESPACE}:2380"
           else
-            # until curl -s http://kv.${MY_NAMESPACE}:2379/pd/api/v1/members 2>/dev/null; do
-            #   echo "Wait PD service ready"
-            #   sleep 5
-            # done
+            until curl -s http://kv.${MY_NAMESPACE}:2379/pd/api/v1/members 2>/dev/null; do
+              echo "Wait PD service ready"
+              sleep 5
+            done
             extraArgs="--join=http://kv.${MY_NAMESPACE}:2379"
+            MEMBERS=$(nslookup kv-headless 2>/dev/null | awk '/Address/{print $3}')
           fi
           /pd-server \
           --name=${MY_POD_NAME} \
@@ -56,6 +57,10 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.name
+        - name: MY_POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
         volumeMounts:
         - name: data
           mountPath: /data
